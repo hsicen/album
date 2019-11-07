@@ -1,7 +1,6 @@
 package com.yanzhenjie.album.app.album;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,7 +35,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private final LayoutInflater mInflater;
     private final boolean hasCamera;
     private final int mChoiceMode;
-    private final ColorStateList mSelector;
+    private final int mChoiceType;
 
     private List<AlbumFile> mAlbumFiles;
 
@@ -44,11 +43,11 @@ public class AlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private OnItemClickListener mItemClickListener;
     private OnCheckedClickListener mCheckedClickListener;
 
-    public AlbumAdapter(Context context, boolean hasCamera, int choiceMode, ColorStateList selector) {
+    public AlbumAdapter(Context context, boolean hasCamera, int choiceMode, int choiceType) {
         this.mInflater = LayoutInflater.from(context);
         this.hasCamera = hasCamera;
         this.mChoiceMode = choiceMode;
-        this.mSelector = selector;
+        this.mChoiceType = choiceType;
     }
 
     public void setAlbumFiles(List<AlbumFile> albumFiles) {
@@ -92,7 +91,11 @@ public class AlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case TYPE_BUTTON: {
-                return new ButtonViewHolder(mInflater.inflate(R.layout.album_item_content_button, parent, false), mAddPhotoClickListener);
+                if (mChoiceMode == Album.FUNCTION_CHOICE_VIDEO) {
+                    return new ButtonViewHolder(mInflater.inflate(R.layout.album_item_video_button, parent, false), mAddPhotoClickListener);
+                } else {
+                    return new ButtonViewHolder(mInflater.inflate(R.layout.album_item_content_button, parent, false), mAddPhotoClickListener);
+                }
             }
             case TYPE_IMAGE: {
                 ImageHolder imageViewHolder = new ImageHolder(mInflater.inflate(R.layout.album_item_content_image, parent, false),

@@ -1,18 +1,3 @@
-/*
- * Copyright 2017 Yan Zhenjie.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.yanzhenjie.album.app.album;
 
 import android.os.Bundle;
@@ -30,8 +15,10 @@ import com.yanzhenjie.album.util.AlbumUtils;
 import java.util.ArrayList;
 
 /**
- * <p>Preview the pictures in the folder in enlarged form.</p>
- * Created by Yan Zhenjie on 2017/3/25.
+ * <p>作者：hsicen  2019/11/7 11:20
+ * <p>邮箱：codinghuang@163.com
+ * <p>功能：
+ * <p>描述：选择预览
  */
 public class GalleryActivity extends BaseActivity implements Contract.GalleryPresenter {
 
@@ -183,16 +170,10 @@ public class GalleryActivity extends BaseActivity implements Contract.GalleryPre
 
     public interface Callback {
 
-        /**
-         * Complete the preview.
-         */
+        /*** 预览完成回调*/
         void onPreviewComplete();
 
-        /**
-         * Check or uncheck a item.
-         *
-         * @param albumFile target item.
-         */
+        /*** 预览改动回调*/
         void onPreviewChanged(AlbumFile albumFile);
     }
 }

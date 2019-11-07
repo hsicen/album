@@ -2,6 +2,7 @@
 
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/Album.MatchParent"
     android:background="@color/albumColorPrimaryBlack">
 
@@ -45,17 +46,16 @@
                     android:textColor="@color/albumFontLight"
                     android:visibility="gone" />
 
-                <android.support.v7.widget.AppCompatCheckBox
+                <com.yanzhenjie.album.widget.AlbumCheckBox
                     android:id="@+id/check_box"
-                    style="@style/Album.CheckBox.WrapContent"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/album_dp_10"
-                    android:layout_marginRight="@dimen/album_dp_10"
-                    android:text="@string/album_check"
+                    android:layout_margin="3dp"
                     android:textColor="@color/albumFontLight"
-                    android:textSize="@dimen/album_sp_16" />
+                    android:text="@string/album_check"
+                    android:layout_marginEnd="@dimen/album_dp_10"
+                    app:album_stroke_width="1dp" />
             </RelativeLayout>
 
             <FrameLayout

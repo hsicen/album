@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -439,11 +440,15 @@ public class AlbumActivity extends BaseActivity implements
     public void tryPreviewItem(int position) {
         switch (mChoiceMode) {
             case Album.MODE_SINGLE: {
-                AlbumFile albumFile = mAlbumFolders.get(mCurrentFolder).getAlbumFiles().get(position);
-                mCheckedList.add(albumFile);
-                setCheckedCount();
+                if (mFunction == Album.FUNCTION_CAMERA_VIDEO) {
+                    Log.d("hsc", "点击视频预览");
+                } else {
+                    AlbumFile albumFile = mAlbumFolders.get(mCurrentFolder).getAlbumFiles().get(position);
+                    mCheckedList.add(albumFile);
+                    setCheckedCount();
+                    callbackResult();
+                }
 
-                callbackResult();
                 break;
             }
             case Album.MODE_MULTIPLE: {

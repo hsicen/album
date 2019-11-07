@@ -131,12 +131,11 @@ class AlbumView extends Contract.AlbumView implements View.OnClickListener {
         mRecyclerView.setLayoutManager(mLayoutManager);
         int dividerSize = getResources().getDimensionPixelSize(R.dimen.album_dp_4);
         mRecyclerView.addItemDecoration(new Api21ItemDivider(Color.TRANSPARENT, dividerSize, dividerSize));
-        mAdapter = new AlbumAdapter(getContext(), hasCamera, choiceMode, widget.getMediaItemCheckSelector());
+        mAdapter = new AlbumAdapter(getContext(), hasCamera, choiceMode, mMode);
         mAdapter.setAddClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 getPresenter().clickCamera(view);
-                Log.d("hsc", "点击拍照或者拍摄");
             }
         });
         mAdapter.setCheckedClickListener(new OnCheckedClickListener() {
@@ -144,14 +143,12 @@ class AlbumView extends Contract.AlbumView implements View.OnClickListener {
             public void onCheckedClick(AlbumCheckBox button, int position) {
                 button.setChecked(!button.isChecked(), true);
                 getPresenter().tryCheckItem(button, position);
-                Log.d("hsc", "点击选中框");
             }
         });
         mAdapter.setItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 getPresenter().tryPreviewItem(position);
-                Log.d("hsc", "点击预览");
             }
         });
         mRecyclerView.setAdapter(mAdapter);
