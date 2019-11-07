@@ -25,33 +25,33 @@ import com.yanzhenjie.album.AlbumFolder;
 import com.yanzhenjie.album.api.widget.Widget;
 import com.yanzhenjie.album.mvp.BasePresenter;
 import com.yanzhenjie.album.mvp.BaseView;
+import com.yanzhenjie.album.widget.AlbumCheckBox;
 
 import java.util.List;
 
 /**
- * Created by YanZhenjie on 2018/4/7.
+ * <p>作者：hsicen  2019/11/6 17:04
+ * <p>邮箱：codinghuang@163.com
+ * <p>功能：
+ * <p>描述：控制器
  */
 public final class Contract {
 
     public interface AlbumPresenter extends BasePresenter {
 
-        /**
-         * Click the folder switch.
-         */
+        /*** Click the folder switch.*/
         void clickFolderSwitch();
 
-        /**
-         * Click camera.
-         */
+        /*** Click camera.*/
         void clickCamera(View v);
 
         /**
          * Try to check item.
          *
-         * @param button view.
+         * @param button   view.
          * @param position position of item.
          */
-        void tryCheckItem(CompoundButton button, int position);
+        void tryCheckItem(AlbumCheckBox button, int position);
 
         /**
          * Try to preview item.
@@ -81,11 +81,11 @@ public final class Contract {
         /**
          * Set some properties of the view.
          *
-         * @param widget {@link Widget}.
-         * @param column the count of columns.
-         * @param hasCamera the camera is enabled.
+         * @param widget     {@link Widget}.
+         * @param column     the count of columns.
+         * @param hasCamera  the camera is enabled.
          * @param choiceMode choice mode, one of {@link Album#FUNCTION_CHOICE_ALBUM}, {@link
-         *     Album#FUNCTION_CHOICE_IMAGE} or {@link Album#FUNCTION_CHOICE_VIDEO}.
+         *                   Album#FUNCTION_CHOICE_IMAGE} or {@link Album#FUNCTION_CHOICE_VIDEO}.
          */
         public abstract void setupViews(Widget widget, int column, boolean hasCamera, int choiceMode);
 
@@ -218,7 +218,7 @@ public final class Contract {
         /**
          * Set some properties of the view.
          *
-         * @param widget {@link Widget}.
+         * @param widget    {@link Widget}.
          * @param checkable show the checkbox.
          */
         public abstract void setupViews(Widget widget, boolean checkable);

@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.album.impl;
 
-import android.widget.CompoundButton;
+import com.yanzhenjie.album.widget.AlbumCheckBox;
 
 /**
  * Created by YanZhenjie on 2018/4/11.
@@ -28,5 +28,5 @@ public interface OnCheckedClickListener {
      * @param button   view.
      * @param position the position in the list.
      */
-    void onCheckedClick(CompoundButton button, int position);
+    void onCheckedClick(AlbumCheckBox button, int position);
 }

@@ -73,21 +73,22 @@ public class ImageActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
     }
 
-    /**
-     * Select picture, from album.
-     */
+    /*** Select picture, from album.*/
     private void selectImage() {
         Album.image(this)
                 .multipleChoice()
                 .camera(true)
-                .columnCount(2)
-                .selectCount(6)
+                .columnCount(4)
+                .selectCount(9)
                 .checkedList(mAlbumFiles)
-                .widget(
-                        Widget.newDarkBuilder(this)
-                                .title(mToolbar.getTitle().toString())
-                                .build()
-                )
+                .widget(Widget.newLightBuilder(this)
+                        .title("图片选择")
+                        .statusBarColor(Color.WHITE)
+                        .navigationBarColor(Color.WHITE)
+                        .toolBarColor(Color.WHITE)
+                        .mediaItemCheckSelector(Color.BLACK, Color.parseColor("#1C7FFD"))
+                        .bucketItemCheckSelector(Color.BLACK, Color.parseColor("#1C7FFD"))
+                        .build())
                 .onResult(new Action<ArrayList<AlbumFile>>() {
                     @Override
                     public void onAction(@NonNull ArrayList<AlbumFile> result) {
@@ -105,9 +106,7 @@ public class ImageActivity extends AppCompatActivity {
                 .start();
     }
 
-    /**
-     * Preview image, to album.
-     */
+    /*** Preview image, to album.*/
     private void previewImage(int position) {
         if (mAlbumFiles == null || mAlbumFiles.size() == 0) {
             Toast.makeText(this, R.string.no_selected, Toast.LENGTH_LONG).show();

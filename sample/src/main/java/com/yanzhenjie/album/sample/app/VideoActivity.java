@@ -78,16 +78,17 @@ public class VideoActivity extends AppCompatActivity {
      */
     private void selectVideo() {
         Album.video(this)
-                .multipleChoice()
-                .columnCount(2)
-                .selectCount(6)
+                .singleChoice()
+                .columnCount(4)
                 .camera(true)
-                .checkedList(mAlbumFiles)
-                .widget(
-                        Widget.newDarkBuilder(this)
-                                .title(mToolbar.getTitle().toString())
-                                .build()
-                )
+                .widget(Widget.newLightBuilder(this)
+                        .title("视频")
+                        .statusBarColor(Color.WHITE)
+                        .navigationBarColor(Color.WHITE)
+                        .toolBarColor(Color.WHITE)
+                        .mediaItemCheckSelector(Color.BLACK, Color.parseColor("#1C7FFD"))
+                        .bucketItemCheckSelector(Color.BLACK, Color.parseColor("#1C7FFD"))
+                        .build())
                 .onResult(new Action<ArrayList<AlbumFile>>() {
                     @Override
                     public void onAction(@NonNull ArrayList<AlbumFile> result) {

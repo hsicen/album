@@ -1,18 +1,3 @@
-/*
- * Copyright 2018 Yan Zhenjie
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.yanzhenjie.album.app.album;
 
 import android.content.DialogInterface;
@@ -25,7 +10,6 @@ import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
 
 import com.yanzhenjie.album.Action;
 import com.yanzhenjie.album.Album;
@@ -43,6 +27,7 @@ import com.yanzhenjie.album.app.album.data.ThumbnailBuildTask;
 import com.yanzhenjie.album.impl.OnItemClickListener;
 import com.yanzhenjie.album.mvp.BaseActivity;
 import com.yanzhenjie.album.util.AlbumUtils;
+import com.yanzhenjie.album.widget.AlbumCheckBox;
 import com.yanzhenjie.album.widget.LoadingDialog;
 import com.yanzhenjie.mediascanner.MediaScanner;
 
@@ -51,8 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>Responsible for controlling the album data and the overall logic.</p>
- * Created by Yan Zhenjie on 2016/10/17.
+ * <p>作者：hsicen  2019/11/6 14:49
+ * <p>邮箱：codinghuang@163.com
+ * <p>功能：
+ * <p>描述：图片浏览页面
  */
 public class AlbumActivity extends BaseActivity implements
         Contract.AlbumPresenter,
@@ -102,7 +89,8 @@ public class AlbumActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         initializeArgument();
         setContentView(createView());
-        mView = new AlbumView(this, this);
+
+        mView = new AlbumView(this, this, mFunction);
         mView.setupViews(mWidget, mColumnCount, mHasCamera, mChoiceMode);
         mView.setTitle(mWidget.getTitle());
         mView.setCompleteDisplay(false);
@@ -126,11 +114,7 @@ public class AlbumActivity extends BaseActivity implements
         mFilterVisibility = argument.getBoolean(Album.KEY_INPUT_FILTER_VISIBILITY);
     }
 
-    /**
-     * Use different layouts depending on the style.
-     *
-     * @return layout id.
-     */
+    /*** 针对不同主题使用不同布局文件*/
     private int createView() {
         switch (mWidget.getUiStyle()) {
             case Widget.STYLE_DARK: {
@@ -238,9 +222,7 @@ public class AlbumActivity extends BaseActivity implements
         if (!mFolderDialog.isShowing()) mFolderDialog.show();
     }
 
-    /**
-     * Update data source.
-     */
+    /*** 更新数据*/
     private void showFolderAlbumFiles(int position) {
         this.mCurrentFolder = position;
         AlbumFolder albumFolder = mAlbumFolders.get(position);
@@ -411,7 +393,7 @@ public class AlbumActivity extends BaseActivity implements
     }
 
     @Override
-    public void tryCheckItem(CompoundButton button, int position) {
+    public void tryCheckItem(AlbumCheckBox button, int position) {
         AlbumFile albumFile = mAlbumFolders.get(mCurrentFolder).getAlbumFiles().get(position);
         if (button.isChecked()) {
             if (mCheckedList.size() >= mLimitCount) {
@@ -434,7 +416,7 @@ public class AlbumActivity extends BaseActivity implements
                     }
                 }
                 mView.toast(getResources().getQuantityString(messageRes, mLimitCount, mLimitCount));
-                button.setChecked(false);
+                button.setChecked(false, true);
             } else {
                 albumFile.setChecked(true);
                 mCheckedList.add(albumFile);
@@ -458,8 +440,6 @@ public class AlbumActivity extends BaseActivity implements
         switch (mChoiceMode) {
             case Album.MODE_SINGLE: {
                 AlbumFile albumFile = mAlbumFolders.get(mCurrentFolder).getAlbumFiles().get(position);
-//                albumFile.setChecked(true);
-//                mView.notifyItem(position);
                 mCheckedList.add(albumFile);
                 setCheckedCount();
 
@@ -548,9 +528,7 @@ public class AlbumActivity extends BaseActivity implements
         callbackCancel();
     }
 
-    /**
-     * Callback result action.
-     */
+    /*** 选择结果回调.*/
     private void callbackResult() {
         ThumbnailBuildTask task = new ThumbnailBuildTask(this, mCheckedList, this);
         task.execute();
@@ -569,17 +547,13 @@ public class AlbumActivity extends BaseActivity implements
         finish();
     }
 
-    /**
-     * Callback cancel action.
-     */
+    /*** 点击取消.*/
     private void callbackCancel() {
         if (sCancel != null) sCancel.onAction("User canceled.");
         finish();
     }
 
-    /**
-     * Display loading dialog.
-     */
+    /*** 显示资源加载弹窗.*/
     private void showLoadingDialog() {
         if (mLoadingDialog == null) {
             mLoadingDialog = new LoadingDialog(this);
@@ -590,9 +564,7 @@ public class AlbumActivity extends BaseActivity implements
         }
     }
 
-    /**
-     * Dismiss loading dialog.
-     */
+    /***取消资源加载弹窗.*/
     public void dismissLoadingDialog() {
         if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
             mLoadingDialog.dismiss();

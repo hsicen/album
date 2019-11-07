@@ -1,18 +1,3 @@
-/*
- * Copyright 2017 Yan Zhenjie.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.yanzhenjie.album.app.album.data;
 
 import android.content.ContentResolver;
@@ -26,13 +11,17 @@ import com.yanzhenjie.album.AlbumFolder;
 import com.yanzhenjie.album.Filter;
 import com.yanzhenjie.album.R;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by YanZhenjie on 2017/8/15.
+ * <p>作者：hsicen  2019/11/6 14:59
+ * <p>邮箱：codinghuang@163.com
+ * <p>功能：
+ * <p>描述：媒体文件阅读器
  */
 public class MediaReader {
 
@@ -43,7 +32,8 @@ public class MediaReader {
     private Filter<Long> mDurationFilter;
     private boolean mFilterVisibility;
 
-    public MediaReader(Context context, Filter<Long> sizeFilter, Filter<String> mimeFilter, Filter<Long> durationFilter, boolean filterVisibility) {
+    public MediaReader(Context context, Filter<Long> sizeFilter, Filter<String> mimeFilter,
+                       Filter<Long> durationFilter, boolean filterVisibility) {
         this.mContext = context;
 
         this.mSizeFilter = sizeFilter;
@@ -52,9 +42,7 @@ public class MediaReader {
         this.mFilterVisibility = filterVisibility;
     }
 
-    /**
-     * Image attribute.
-     */
+    /*** 图片属性*/
     private static final String[] IMAGES = {
             MediaStore.Images.Media.DATA,
             MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
@@ -65,17 +53,12 @@ public class MediaReader {
             MediaStore.Images.Media.SIZE
     };
 
-    /**
-     * Scan for image files.
-     */
+    /*** 浏览图片文件*/
     @WorkerThread
     private void scanImageFile(Map<String, AlbumFolder> albumFolderMap, AlbumFolder allFileFolder) {
         ContentResolver contentResolver = mContext.getContentResolver();
         Cursor cursor = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                IMAGES,
-                null,
-                null,
-                null);
+                IMAGES, null, null, null);
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -86,6 +69,10 @@ public class MediaReader {
                 float latitude = cursor.getFloat(4);
                 float longitude = cursor.getFloat(5);
                 long size = cursor.getLong(6);
+
+                //判断文件是否存在
+                File tempFile = new File(path);
+                if (!tempFile.exists()) continue;
 
                 AlbumFile imageFile = new AlbumFile();
                 imageFile.setMediaType(AlbumFile.TYPE_IMAGE);
@@ -123,9 +110,7 @@ public class MediaReader {
         }
     }
 
-    /**
-     * Video attribute.
-     */
+    /*** 视频属性.*/
     private static final String[] VIDEOS = {
             MediaStore.Video.Media.DATA,
             MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
@@ -137,17 +122,12 @@ public class MediaReader {
             MediaStore.Video.Media.DURATION
     };
 
-    /**
-     * Scan for image files.
-     */
+    /*** 浏览视频文件.*/
     @WorkerThread
     private void scanVideoFile(Map<String, AlbumFolder> albumFolderMap, AlbumFolder allFileFolder) {
         ContentResolver contentResolver = mContext.getContentResolver();
         Cursor cursor = contentResolver.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                VIDEOS,
-                null,
-                null,
-                null);
+                VIDEOS, null, null, null);
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -159,6 +139,10 @@ public class MediaReader {
                 float longitude = cursor.getFloat(5);
                 long size = cursor.getLong(6);
                 long duration = cursor.getLong(7);
+
+                //判断文件是否存在
+                File tempFile = new File(path);
+                if (!tempFile.exists()) continue;
 
                 AlbumFile videoFile = new AlbumFile();
                 videoFile.setMediaType(AlbumFile.TYPE_VIDEO);
@@ -201,9 +185,7 @@ public class MediaReader {
         }
     }
 
-    /**
-     * Scan the list of pictures in the library.
-     */
+    /*** 获取所有文件*/
     @WorkerThread
     public ArrayList<AlbumFolder> getAllImage() {
         Map<String, AlbumFolder> albumFolderMap = new HashMap<>();
@@ -225,9 +207,7 @@ public class MediaReader {
         return albumFolders;
     }
 
-    /**
-     * Scan the list of videos in the library.
-     */
+    /*** 获取所有视频文件*/
     @WorkerThread
     public ArrayList<AlbumFolder> getAllVideo() {
         Map<String, AlbumFolder> albumFolderMap = new HashMap<>();
@@ -249,9 +229,7 @@ public class MediaReader {
         return albumFolders;
     }
 
-    /**
-     * Get all the multimedia files, including videos and pictures.
-     */
+    /*** 获取所有媒体文件(图片和视频)*/
     @WorkerThread
     public ArrayList<AlbumFolder> getAllMedia() {
         Map<String, AlbumFolder> albumFolderMap = new HashMap<>();

@@ -1,18 +1,3 @@
-/*
- * Copyright 2018 Yan Zhenjie
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.yanzhenjie.album.app.album;
 
 import android.app.Activity;
@@ -23,13 +8,15 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
+import com.yanzhenjie.album.Album;
 import com.yanzhenjie.album.AlbumFolder;
 import com.yanzhenjie.album.R;
 import com.yanzhenjie.album.api.widget.Widget;
@@ -39,18 +26,20 @@ import com.yanzhenjie.album.impl.OnCheckedClickListener;
 import com.yanzhenjie.album.impl.OnItemClickListener;
 import com.yanzhenjie.album.util.AlbumUtils;
 import com.yanzhenjie.album.util.SystemBar;
+import com.yanzhenjie.album.widget.AlbumCheckBox;
 import com.yanzhenjie.album.widget.ColorProgressBar;
 import com.yanzhenjie.album.widget.divider.Api21ItemDivider;
 
 /**
- * Created by YanZhenjie on 2018/4/7.
+ * <p>作者：hsicen  2019/11/6 17:07
+ * <p>邮箱：codinghuang@163.com
+ * <p>功能：
+ * <p>描述：媒体文件浏览控件
  */
 class AlbumView extends Contract.AlbumView implements View.OnClickListener {
 
     private Activity mActivity;
-
     private Toolbar mToolbar;
-    private MenuItem mCompleteMenu;
 
     private RecyclerView mRecyclerView;
     private GridLayoutManager mLayoutManager;
@@ -62,12 +51,19 @@ class AlbumView extends Contract.AlbumView implements View.OnClickListener {
     private LinearLayout mLayoutLoading;
     private ColorProgressBar mProgressBar;
 
-    public AlbumView(Activity activity, Contract.AlbumPresenter presenter) {
+    //底部导航栏
+    private RelativeLayout mBottomNav;
+    private MenuItem mCompleteMenu;
+    private int mMode;
+
+    public AlbumView(Activity activity, Contract.AlbumPresenter presenter, int chooseMode) {
         super(activity, presenter);
         this.mActivity = activity;
+        this.mMode = chooseMode;
 
         this.mToolbar = activity.findViewById(R.id.toolbar);
         this.mRecyclerView = activity.findViewById(R.id.recycler_view);
+        this.mBottomNav = activity.findViewById(R.id.rl_bottom_nav);
 
         this.mBtnSwitchFolder = activity.findViewById(R.id.btn_switch_dir);
         this.mBtnPreview = activity.findViewById(R.id.btn_preview);
@@ -97,6 +93,14 @@ class AlbumView extends Contract.AlbumView implements View.OnClickListener {
     @Override
     public void setupViews(Widget widget, int column, boolean hasCamera, int choiceMode) {
         SystemBar.setNavigationBarColor(mActivity, widget.getNavigationBarColor());
+
+        if (mMode == Album.FUNCTION_CHOICE_VIDEO) {
+            mBottomNav.setVisibility(View.GONE);
+            mCompleteMenu.setVisible(false);
+        } else {
+            mBottomNav.setVisibility(View.VISIBLE);
+            mCompleteMenu.setVisible(true);
+        }
 
         int statusBarColor = widget.getStatusBarColor();
         if (widget.getUiStyle() == Widget.STYLE_LIGHT) {
@@ -132,18 +136,22 @@ class AlbumView extends Contract.AlbumView implements View.OnClickListener {
             @Override
             public void onItemClick(View view, int position) {
                 getPresenter().clickCamera(view);
+                Log.d("hsc", "点击拍照或者拍摄");
             }
         });
         mAdapter.setCheckedClickListener(new OnCheckedClickListener() {
             @Override
-            public void onCheckedClick(CompoundButton button, int position) {
+            public void onCheckedClick(AlbumCheckBox button, int position) {
+                button.setChecked(!button.isChecked(), true);
                 getPresenter().tryCheckItem(button, position);
+                Log.d("hsc", "点击选中框");
             }
         });
         mAdapter.setItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 getPresenter().tryPreviewItem(position);
+                Log.d("hsc", "点击预览");
             }
         });
         mRecyclerView.setAdapter(mAdapter);
