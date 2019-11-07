@@ -24,6 +24,7 @@
     <dimen name="album_dp_1">1dp</dimen>
     <dimen name="album_dp_2">2dp</dimen>
     <dimen name="album_dp_4">4dp</dimen>
+    <dimen name="album_dp_3">3dp</dimen>
     <dimen name="album_dp_6">6dp</dimen>
     <dimen name="album_dp_10">10dp</dimen>
     <dimen name="album_dp_15">15dp</dimen>

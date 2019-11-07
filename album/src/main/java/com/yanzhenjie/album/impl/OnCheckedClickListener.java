@@ -18,7 +18,10 @@ package com.yanzhenjie.album.impl;
 import com.yanzhenjie.album.widget.AlbumCheckBox;
 
 /**
- * Created by YanZhenjie on 2018/4/11.
+ * <p>作者：hsicen  2019/11/7 15:08
+ * <p>邮箱：codinghuang@163.com
+ * <p>功能：
+ * <p>描述：选择框点击监听
  */
 public interface OnCheckedClickListener {
 

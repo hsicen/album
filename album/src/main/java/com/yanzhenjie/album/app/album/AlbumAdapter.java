@@ -192,8 +192,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             mLayoutLayer = itemView.findViewById(R.id.layout_layer);
 
             itemView.setOnClickListener(this);
-            mCheckBox.setOnClickListener(this);
             mLayoutLayer.setOnClickListener(this);
+            mCheckBox.setOnClickListener(this);
         }
 
         @Override

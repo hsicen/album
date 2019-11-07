@@ -8,7 +8,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -129,15 +128,19 @@ class AlbumView extends Contract.AlbumView implements View.OnClickListener {
         Configuration config = mActivity.getResources().getConfiguration();
         mLayoutManager = new GridLayoutManager(getContext(), column, getOrientation(config), false);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        int dividerSize = getResources().getDimensionPixelSize(R.dimen.album_dp_4);
+        int dividerSize = getResources().getDimensionPixelSize(R.dimen.album_dp_3);
         mRecyclerView.addItemDecoration(new Api21ItemDivider(Color.TRANSPARENT, dividerSize, dividerSize));
         mAdapter = new AlbumAdapter(getContext(), hasCamera, choiceMode, mMode);
+
+        //拍照，视频录制点击监听
         mAdapter.setAddClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 getPresenter().clickCamera(view);
             }
         });
+
+        //选择框点击监听
         mAdapter.setCheckedClickListener(new OnCheckedClickListener() {
             @Override
             public void onCheckedClick(AlbumCheckBox button, int position) {
@@ -145,12 +148,16 @@ class AlbumView extends Contract.AlbumView implements View.OnClickListener {
                 getPresenter().tryCheckItem(button, position);
             }
         });
+
+        //资源点击监听
         mAdapter.setItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 getPresenter().tryPreviewItem(position);
             }
         });
+
+        //绑定数据
         mRecyclerView.setAdapter(mAdapter);
     }
 

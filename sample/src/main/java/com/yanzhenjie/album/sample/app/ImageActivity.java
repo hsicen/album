@@ -86,8 +86,8 @@ public class ImageActivity extends AppCompatActivity {
                         .statusBarColor(Color.WHITE)
                         .navigationBarColor(Color.WHITE)
                         .toolBarColor(Color.WHITE)
-                        .mediaItemCheckSelector(Color.BLACK, Color.parseColor("#1C7FFD"))
-                        .bucketItemCheckSelector(Color.BLACK, Color.parseColor("#1C7FFD"))
+                        .mediaItemCheckSelector(Color.WHITE, Color.parseColor("#1C7FFD"))
+                        .bucketItemCheckSelector(Color.WHITE, Color.parseColor("#1C7FFD"))
                         .build())
                 .onResult(new Action<ArrayList<AlbumFile>>() {
                     @Override

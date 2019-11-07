@@ -1,8 +1,10 @@
 package com.yanzhenjie.album.app.gallery;
 
 import android.app.Activity;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,18 +19,13 @@ import com.yanzhenjie.album.R;
 import com.yanzhenjie.album.api.widget.Widget;
 import com.yanzhenjie.album.app.Contract;
 import com.yanzhenjie.album.util.SystemBar;
-import com.yanzhenjie.album.widget.AlbumCheckBox;
 
 import java.util.List;
 
 /**
- * <p>作者：hsicen  2019/11/7 11:38
- * <p>邮箱：codinghuang@163.com
- * <p>功能：
- * <p>描述：预览显示控件
+ * Created by YanZhenjie on 2018/4/9.
  */
-public class GalleryView<Data> extends Contract.GalleryView<Data> implements View.OnClickListener,
-        AlbumCheckBox.OnCheckedChangeListener {
+public class GalleryView<Data> extends Contract.GalleryView<Data> implements View.OnClickListener {
 
     private Activity mActivity;
 
@@ -37,7 +34,7 @@ public class GalleryView<Data> extends Contract.GalleryView<Data> implements Vie
     private ViewPager mViewPager;
     private RelativeLayout mLayoutBottom;
     private TextView mTvDuration;
-    private AlbumCheckBox mCheckBox;
+    private AppCompatCheckBox mCheckBox;
     private FrameLayout mLayoutLayer;
 
     public GalleryView(Activity activity, Contract.GalleryPresenter presenter) {
@@ -49,7 +46,7 @@ public class GalleryView<Data> extends Contract.GalleryView<Data> implements Vie
         this.mCheckBox = activity.findViewById(R.id.check_box);
         this.mLayoutLayer = activity.findViewById(R.id.layout_layer);
 
-        this.mCheckBox.setOnCheckedChangeListener(this);
+        this.mCheckBox.setOnClickListener(this);
         this.mLayoutLayer.setOnClickListener(this);
     }
 
@@ -78,6 +75,9 @@ public class GalleryView<Data> extends Contract.GalleryView<Data> implements Vie
         if (!checkable) {
             mCompleteMenu.setVisible(false);
             mCheckBox.setVisibility(View.GONE);
+        } else {
+            ColorStateList itemSelector = widget.getMediaItemCheckSelector();
+            mCheckBox.setTextColor(itemSelector);
         }
 
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -137,7 +137,7 @@ public class GalleryView<Data> extends Contract.GalleryView<Data> implements Vie
 
     @Override
     public void setChecked(boolean checked) {
-        mCheckBox.setChecked(checked, true);
+        mCheckBox.setChecked(checked);
     }
 
     @Override
@@ -157,13 +157,10 @@ public class GalleryView<Data> extends Contract.GalleryView<Data> implements Vie
 
     @Override
     public void onClick(View v) {
-        if (v == mLayoutLayer) {
+        if (v == mCheckBox) {
+            getPresenter().onCheckedChanged();
+        } else if (v == mLayoutLayer) {
             // Intercept click events.
         }
-    }
-
-    @Override
-    public void onCheckedChanged(AlbumCheckBox checkBox, boolean isChecked) {
-        getPresenter().onCheckedChanged();
     }
 }

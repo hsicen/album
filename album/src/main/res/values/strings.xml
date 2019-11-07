@@ -39,7 +39,7 @@
     <string name="album_check_video_little">Please select a video item.</string>
     <string name="album_check_album_little">Please select a media item.</string>
     <string name="album_menu_finish">Finish</string>
-    <string name="album_check">Selected</string>
+    <string name="album_check">&#160;&#160;Selected</string>
 
     <string name="album_title_permission_failed">Permission denied</string>
     <string name="album_permission_storage_failed_hint">No storage permission, please authorize before use.</string>

@@ -98,20 +98,6 @@ public class AlbumCheckBox extends View implements Checkable {
         mTickPoints[0] = new Point();
         mTickPoints[1] = new Point();
         mTickPoints[2] = new Point();
-
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggle();
-                mTickDrawing = false;
-                mDrewDistance = 0;
-                if (isChecked()) {
-                    startCheckedAnimation();
-                } else {
-                    startUnCheckedAnimation();
-                }
-            }
-        });
     }
 
     @Override

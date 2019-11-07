@@ -22,16 +22,15 @@ import java.util.ArrayList;
  */
 public class GalleryActivity extends BaseActivity implements Contract.GalleryPresenter {
 
-    public static ArrayList<AlbumFile> sAlbumFiles;
-    public static int sCheckedCount;
-    public static int sCurrentPosition;
-
-    public static Callback sCallback;
+    public static ArrayList<AlbumFile> sAlbumFiles; //所有文件
+    public static int sCheckedCount; //选中数量
+    public static int sCurrentPosition;  //当前位置
 
     private Widget mWidget;
     private int mFunction;
     private int mAllowSelectCount;
 
+    public static Callback sCallback;
     private Contract.GalleryView<AlbumFile> mView;
 
     @Override
