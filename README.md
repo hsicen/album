@@ -3,7 +3,7 @@
 
 ## Download
 ```groovy
-implementation 'com.yanzhenjie:album:2.1.3'
+implementation 'com.github.Hsicen:album:2.1.4'
 ```
 
 ## Usage
