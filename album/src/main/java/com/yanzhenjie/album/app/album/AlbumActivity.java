@@ -46,6 +46,7 @@ public class AlbumActivity extends BaseActivity implements
         Contract.AlbumPresenter,
         MediaReadTask.Callback,
         GalleryActivity.Callback,
+        VideoPlayActivity.VideoCallback,
         PathConvertTask.Callback,
         ThumbnailBuildTask.Callback {
 
@@ -442,7 +443,6 @@ public class AlbumActivity extends BaseActivity implements
             case Album.MODE_SINGLE: {
                 if (mFunction == Album.FUNCTION_CAMERA_VIDEO) {
                     AlbumFile albumFile = mAlbumFolders.get(mCurrentFolder).getAlbumFiles().get(position);
-                    //选择逻辑判断  3s<time<=30s  300M
                     long duration = albumFile.getDuration() / 1000;
 
                     if (duration <= 3) {
@@ -460,6 +460,8 @@ public class AlbumActivity extends BaseActivity implements
                         return;
                     }
 
+                    VideoPlayActivity.sCallback = this;
+                    VideoPlayActivity.mSelectFile = albumFile;
                     VideoPlayActivity.start(this, albumFile.getPath());
                 } else {
                     AlbumFile albumFile = mAlbumFolders.get(mCurrentFolder).getAlbumFiles().get(position);
@@ -499,7 +501,14 @@ public class AlbumActivity extends BaseActivity implements
         }
     }
 
-    @Override
+    @Override //预览视频回调
+    public void onVideoBack() {
+        mCheckedList.add(VideoPlayActivity.mSelectFile);
+        setCheckedCount();
+        callbackResult();
+    }
+
+    @Override //预览图片回调
     public void onPreviewComplete() {
         callbackResult();
     }

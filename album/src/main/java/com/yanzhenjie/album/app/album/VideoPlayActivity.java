@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.yanzhenjie.album.AlbumFile;
 import com.yanzhenjie.album.R;
 import com.yanzhenjie.album.mvp.BaseActivity;
 import com.yanzhenjie.album.util.SystemBar;
@@ -23,6 +24,9 @@ import com.yanzhenjie.album.util.SystemBar;
  * <p>描述：本地视频播放
  */
 public class VideoPlayActivity extends BaseActivity {
+    //预览完成回调
+    public static VideoCallback sCallback;
+    public static AlbumFile mSelectFile;
 
     private Toolbar mToolbar;
     private String mVideoPath;
@@ -67,7 +71,6 @@ public class VideoPlayActivity extends BaseActivity {
         //MediaController mediaController = new MediaController(this);
         //mVideoView.setMediaController(mediaController);
         mVideoView.setVideoPath(mVideoPath);
-
 
         mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -128,6 +131,7 @@ public class VideoPlayActivity extends BaseActivity {
         mTvFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sCallback.onVideoBack();
                 finish();
             }
         });
@@ -156,5 +160,11 @@ public class VideoPlayActivity extends BaseActivity {
                 | View.SYSTEM_UI_FLAG_FULLSCREEN //hide statusBar
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION; //hide navigationBar
         getWindow().getDecorView().setSystemUiVisibility(uiFlags);
+    }
+
+    public interface VideoCallback {
+
+        /*** 预览完成回调*/
+        void onVideoBack();
     }
 }
