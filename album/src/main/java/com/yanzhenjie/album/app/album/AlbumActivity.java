@@ -194,6 +194,7 @@ public class AlbumActivity extends BaseActivity implements
         }
     }
 
+    /*** 拍照和录制视频回调处理*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -231,6 +232,7 @@ public class AlbumActivity extends BaseActivity implements
         mView.bindAlbumFolder(albumFolder);
     }
 
+    /*** 点击拍照或录制视屏处理*/
     @Override
     public void clickCamera(View v) {
         int hasCheckSize = mCheckedList.size();
@@ -291,6 +293,7 @@ public class AlbumActivity extends BaseActivity implements
         }
     }
 
+    /*** 点击拍照逻辑处理*/
     private void takePicture() {
         String filePath;
         if (mCurrentFolder == 0) {
@@ -306,6 +309,7 @@ public class AlbumActivity extends BaseActivity implements
                 .start();
     }
 
+    /*** 点击录制视频逻辑处理*/
     private void takeVideo() {
         String filePath;
         if (mCurrentFolder == 0) {
@@ -320,10 +324,11 @@ public class AlbumActivity extends BaseActivity implements
                 .quality(mQuality)
                 .limitDuration(mLimitDuration)
                 .limitBytes(mLimitBytes)
-                .onResult(mCameraAction)
+                .onResult(mCameraAction) //拍照回调处理
                 .start();
     }
 
+    //拍照回调处理
     private Action<String> mCameraAction = new Action<String>() {
         @Override
         public void onAction(@NonNull String result) {
@@ -338,23 +343,54 @@ public class AlbumActivity extends BaseActivity implements
         }
     };
 
+    //拍照返回开始转化
     @Override
     public void onConvertStart() {
-        showLoadingDialog();
-        mLoadingDialog.setMessage(R.string.album_converting);
+        //showLoadingDialog();
+        //mLoadingDialog.setMessage(R.string.album_converting);
     }
 
+    //转化结果回调
     @Override
     public void onConvertCallback(AlbumFile albumFile) {
-        albumFile.setChecked(!albumFile.isDisable());
-        if (albumFile.isDisable()) {
-            if (mFilterVisibility) addFileToList(albumFile);
-            else mView.toast(getString(R.string.album_take_file_unavailable));
+        if (mChoiceMode == Album.MODE_SINGLE) {
+
+            if (mFunction == Album.FUNCTION_CAMERA_VIDEO) {
+                long duration = albumFile.getDuration() / 1000;
+                if (duration <= 3) {
+                    addFileToList(albumFile);
+                    Toast.makeText(this, "请选择3s以上的视频", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (duration > 30) {
+                    addFileToList(albumFile);
+                    Toast.makeText(this, "请选择30s以内的视频", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (albumFile.getSize() > 300 * 1024 * 1024) {  //B -> KB -> MB
+                    addFileToList(albumFile);
+                    Toast.makeText(this, "请选择300M以内的视频", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            ArrayList<AlbumFile> tempList = new ArrayList<>();
+            tempList.add(albumFile);
+            onThumbnailCallback(tempList);
         } else {
-            addFileToList(albumFile);
+            //多选处理
+            albumFile.setChecked(!albumFile.isDisable());
+            if (albumFile.isDisable()) {
+                if (mFilterVisibility) addFileToList(albumFile);
+                else mView.toast(getString(R.string.album_take_file_unavailable));
+            } else {
+                addFileToList(albumFile);
+            }
         }
 
-        dismissLoadingDialog();
+        //dismissLoadingDialog();
     }
 
     private void addFileToList(AlbumFile albumFile) {
@@ -394,6 +430,7 @@ public class AlbumActivity extends BaseActivity implements
         }
     }
 
+    /***点击选中框处理 */
     @Override
     public void tryCheckItem(AlbumCheckBox button, int position) {
         AlbumFile albumFile = mAlbumFolders.get(mCurrentFolder).getAlbumFiles().get(position);
@@ -437,6 +474,7 @@ public class AlbumActivity extends BaseActivity implements
         mView.setSubTitle(count + "/" + mLimitCount);
     }
 
+    /*** 点击预览处理*/
     @Override
     public void tryPreviewItem(int position) {
         switch (mChoiceMode) {
@@ -501,14 +539,14 @@ public class AlbumActivity extends BaseActivity implements
         }
     }
 
-    @Override //预览视频回调
+    @Override //视频预览回调处理
     public void onVideoBack() {
-        mCheckedList.add(VideoPlayActivity.mSelectFile);
-        setCheckedCount();
-        callbackResult();
+        ArrayList<AlbumFile> tempList = new ArrayList<>();
+        tempList.add(VideoPlayActivity.mSelectFile);
+        onThumbnailCallback(tempList);
     }
 
-    @Override //预览图片回调
+    @Override //预览图片回调处理
     public void onPreviewComplete() {
         callbackResult();
     }
@@ -575,14 +613,14 @@ public class AlbumActivity extends BaseActivity implements
 
     @Override
     public void onThumbnailCallback(ArrayList<AlbumFile> albumFiles) {
-        if (sResult != null) sResult.onAction(albumFiles);
+        if (sResult != null) sResult.onAction(albumFiles);  //回调成功给调用层
         //dismissLoadingDialog();
         finish();
     }
 
     /*** 点击取消.*/
     private void callbackCancel() {
-        if (sCancel != null) sCancel.onAction("User canceled.");
+        if (sCancel != null) sCancel.onAction("User canceled."); //回调失败给调用层
         finish();
     }
 

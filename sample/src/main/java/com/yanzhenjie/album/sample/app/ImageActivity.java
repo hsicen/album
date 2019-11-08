@@ -82,7 +82,7 @@ public class ImageActivity extends AppCompatActivity {
                 .selectCount(9)
                 .checkedList(mAlbumFiles)
                 .widget(Widget.newLightBuilder(this)
-                        .title("图片选择")
+                        .title("所有图片")
                         .statusBarColor(Color.WHITE)
                         .navigationBarColor(Color.WHITE)
                         .toolBarColor(Color.WHITE)

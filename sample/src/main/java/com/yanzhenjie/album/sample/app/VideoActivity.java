@@ -81,8 +81,11 @@ public class VideoActivity extends AppCompatActivity {
                 .singleChoice()
                 .columnCount(4)
                 .camera(true)
+                .quality(1)
+                .limitBytes(300 * 1024 * 1024)  //Byte
+                .limitDuration(1000 * 30) //毫秒
                 .widget(Widget.newLightBuilder(this)
-                        .title("视频")
+                        .title("所有视频")
                         .statusBarColor(Color.WHITE)
                         .navigationBarColor(Color.WHITE)
                         .toolBarColor(Color.WHITE)

@@ -108,13 +108,14 @@ public class AlbumUtils {
      * Take picture.
      *
      * @param activity    activity.
-     * @param requestCode code, see {@link Activity#onActivityResult(int, int, Intent)}.
-     * @param outPath     file path.
+     * @param requestCode code, see {@link Activity onActivityResult(int, int, Intent)}.
+     *                    * @param outPath     file path.
      */
     public static void takeImage(@NonNull Activity activity, int requestCode, File outPath) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Uri uri = getUri(activity, outPath);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         activity.startActivityForResult(intent, requestCode);
@@ -124,7 +125,7 @@ public class AlbumUtils {
      * Take video.
      *
      * @param activity    activity.
-     * @param requestCode code, see {@link Activity#onActivityResult(int, int, Intent)}.
+     * @param requestCode code, see {@link Activity# onActivityResult(int, int, Intent)}.
      * @param outPath     file path.
      * @param quality     currently value 0 means low quality, suitable for MMS messages, and  value 1 means high quality.
      * @param duration    specify the maximum allowed recording duration in seconds.
@@ -134,11 +135,25 @@ public class AlbumUtils {
                                  @IntRange(from = 0, to = 1) int quality,
                                  @IntRange(from = 1) long duration,
                                  @IntRange(from = 1) long limitBytes) {
+        String brand = Build.BRAND;
+
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         Uri uri = getUri(activity, outPath);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, quality);
-        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, duration);
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+
+        switch (brand) {
+            case "HUAWEI":
+            case "Meizu":
+            case "Xiaomi":
+            case "samsung":
+                intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
+                break;
+            default:
+                intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30L);
+                break;
+        }
+
         intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, limitBytes);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);

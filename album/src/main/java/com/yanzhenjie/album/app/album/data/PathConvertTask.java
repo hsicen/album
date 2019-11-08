@@ -1,18 +1,3 @@
-/*
- * Copyright 2017 Yan Zhenjie.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.yanzhenjie.album.app.album.data;
 
 import android.os.AsyncTask;
@@ -20,21 +5,18 @@ import android.os.AsyncTask;
 import com.yanzhenjie.album.AlbumFile;
 
 /**
- * Created by YanZhenjie on 2017/10/18.
+ * <p>作者：hsicen  2019/11/8 17:27
+ * <p>邮箱：codinghuang@163.com
+ * <p>功能：
+ * <p>描述：将文件路径转化为文件
  */
 public class PathConvertTask extends AsyncTask<String, Void, AlbumFile> {
 
     public interface Callback {
-        /**
-         * The task begins.
-         */
+        /***开始转化.*/
         void onConvertStart();
 
-        /**
-         * Callback results.
-         *
-         * @param albumFile result.
-         */
+        /*** 转化完成*/
         void onConvertCallback(AlbumFile albumFile);
     }
 
