@@ -10,6 +10,7 @@ import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.yanzhenjie.album.Action;
 import com.yanzhenjie.album.Album;
@@ -441,6 +442,24 @@ public class AlbumActivity extends BaseActivity implements
             case Album.MODE_SINGLE: {
                 if (mFunction == Album.FUNCTION_CAMERA_VIDEO) {
                     AlbumFile albumFile = mAlbumFolders.get(mCurrentFolder).getAlbumFiles().get(position);
+                    //选择逻辑判断  3s<time<=30s  300M
+                    long duration = albumFile.getDuration() / 1000;
+
+                    if (duration <= 3) {
+                        Toast.makeText(this, "请选择3s以上的视频", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (duration > 30) {
+                        Toast.makeText(this, "请选择30s以内的视频", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (albumFile.getSize() > 300 * 1024 * 1024) {  //B -> KB -> MB
+                        Toast.makeText(this, "请选择300M以内的视频", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     VideoPlayActivity.start(this, albumFile.getPath());
                 } else {
                     AlbumFile albumFile = mAlbumFolders.get(mCurrentFolder).getAlbumFiles().get(position);
@@ -541,14 +560,14 @@ public class AlbumActivity extends BaseActivity implements
 
     @Override
     public void onThumbnailStart() {
-        showLoadingDialog();
-        mLoadingDialog.setMessage(R.string.album_thumbnail);
+        //showLoadingDialog();
+        //mLoadingDialog.setMessage(R.string.album_thumbnail);
     }
 
     @Override
     public void onThumbnailCallback(ArrayList<AlbumFile> albumFiles) {
         if (sResult != null) sResult.onAction(albumFiles);
-        dismissLoadingDialog();
+        //dismissLoadingDialog();
         finish();
     }
 
@@ -584,5 +603,6 @@ public class AlbumActivity extends BaseActivity implements
         sResult = null;
         sCancel = null;
         super.finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }
