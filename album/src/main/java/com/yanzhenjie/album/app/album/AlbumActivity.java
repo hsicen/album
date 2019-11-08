@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -441,7 +440,8 @@ public class AlbumActivity extends BaseActivity implements
         switch (mChoiceMode) {
             case Album.MODE_SINGLE: {
                 if (mFunction == Album.FUNCTION_CAMERA_VIDEO) {
-                    Log.d("hsc", "点击视频预览");
+                    AlbumFile albumFile = mAlbumFolders.get(mCurrentFolder).getAlbumFiles().get(position);
+                    VideoPlayActivity.start(this, albumFile.getPath());
                 } else {
                     AlbumFile albumFile = mAlbumFolders.get(mCurrentFolder).getAlbumFiles().get(position);
                     mCheckedList.add(albumFile);

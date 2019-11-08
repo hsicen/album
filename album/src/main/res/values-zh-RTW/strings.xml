@@ -40,6 +40,7 @@
     <string name="album_check_album_little">請選擇一個媒體文件</string>
     <string name="album_menu_finish">完成</string>
     <string name="album_check">選擇</string>
+    <string name="album_text_empty">&#160;&#160;</string>
 
     <string name="album_title_permission_failed">沒有權限</string>
     <string name="album_permission_storage_failed_hint">沒有存儲權限，請在使用之前授權。</string>
