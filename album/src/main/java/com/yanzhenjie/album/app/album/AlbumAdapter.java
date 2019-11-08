@@ -91,7 +91,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case TYPE_BUTTON: {
-                if (mChoiceMode == Album.FUNCTION_CHOICE_VIDEO) {
+                if (mChoiceType == Album.FUNCTION_CHOICE_VIDEO) {
                     return new ButtonViewHolder(mInflater.inflate(R.layout.album_item_video_button, parent, false), mAddPhotoClickListener);
                 } else {
                     return new ButtonViewHolder(mInflater.inflate(R.layout.album_item_content_button, parent, false), mAddPhotoClickListener);
