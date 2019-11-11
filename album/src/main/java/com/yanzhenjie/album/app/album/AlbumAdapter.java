@@ -1,7 +1,9 @@
 package com.yanzhenjie.album.app.album;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +18,6 @@ import com.yanzhenjie.album.R;
 import com.yanzhenjie.album.impl.OnCheckedClickListener;
 import com.yanzhenjie.album.impl.OnItemClickListener;
 import com.yanzhenjie.album.util.AlbumUtils;
-import com.yanzhenjie.album.widget.AlbumCheckBox;
 
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private final boolean hasCamera;
     private final int mChoiceMode;
     private final int mChoiceType;
+    private final ColorStateList mSelector;
 
     private List<AlbumFile> mAlbumFiles;
 
@@ -43,11 +45,12 @@ public class AlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private OnItemClickListener mItemClickListener;
     private OnCheckedClickListener mCheckedClickListener;
 
-    public AlbumAdapter(Context context, boolean hasCamera, int choiceMode, int choiceType) {
+    public AlbumAdapter(Context context, boolean hasCamera, int choiceMode, int choiceType, ColorStateList selector) {
         this.mInflater = LayoutInflater.from(context);
         this.hasCamera = hasCamera;
         this.mChoiceMode = choiceMode;
         this.mChoiceType = choiceType;
+        this.mSelector = selector;
     }
 
     public void setAlbumFiles(List<AlbumFile> albumFiles) {
@@ -104,6 +107,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         mCheckedClickListener);
                 if (mChoiceMode == Album.MODE_MULTIPLE) {
                     imageViewHolder.mCheckBox.setVisibility(View.VISIBLE);
+                    imageViewHolder.mCheckBox.setTextColor(mSelector);
                 } else {
                     imageViewHolder.mCheckBox.setVisibility(View.GONE);
                 }
@@ -116,6 +120,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         mCheckedClickListener);
                 if (mChoiceMode == Album.MODE_MULTIPLE) {
                     videoViewHolder.mCheckBox.setVisibility(View.VISIBLE);
+                    videoViewHolder.mCheckBox.setTextColor(mSelector);
                 } else {
                     videoViewHolder.mCheckBox.setVisibility(View.GONE);
                 }
@@ -176,7 +181,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private final OnCheckedClickListener mCheckedClickListener;
 
         private ImageView mIvImage;
-        private AlbumCheckBox mCheckBox;
+        private AppCompatCheckBox mCheckBox;
 
         private FrameLayout mLayoutLayer;
 
@@ -198,7 +203,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         @Override
         public void setData(AlbumFile albumFile) {
-            mCheckBox.setChecked(albumFile.isChecked(), true);
+            mCheckBox.setChecked(albumFile.isChecked());
             Album.getAlbumConfig()
                     .getAlbumLoader()
                     .load(mIvImage, albumFile);
@@ -229,7 +234,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private final OnCheckedClickListener mCheckedClickListener;
 
         private ImageView mIvImage;
-        private AlbumCheckBox mCheckBox;
+        private AppCompatCheckBox mCheckBox;
         private TextView mTvDuration;
 
         private FrameLayout mLayoutLayer;
@@ -254,7 +259,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @Override
         public void setData(AlbumFile albumFile) {
             Album.getAlbumConfig().getAlbumLoader().load(mIvImage, albumFile);
-            mCheckBox.setChecked(albumFile.isChecked(), true);
+            mCheckBox.setChecked(albumFile.isChecked());
             mTvDuration.setText(AlbumUtils.convertDuration(albumFile.getDuration()));
 
             mLayoutLayer.setVisibility(albumFile.isDisable() ? View.VISIBLE : View.GONE);

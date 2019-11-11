@@ -10,6 +10,7 @@ import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.yanzhenjie.album.Action;
@@ -432,7 +433,7 @@ public class AlbumActivity extends BaseActivity implements
 
     /***点击选中框处理 */
     @Override
-    public void tryCheckItem(AlbumCheckBox button, int position) {
+    public void tryCheckItem(CompoundButton button, int position) {
         AlbumFile albumFile = mAlbumFolders.get(mCurrentFolder).getAlbumFiles().get(position);
         if (button.isChecked()) {
             if (mCheckedList.size() >= mLimitCount) {
@@ -455,7 +456,7 @@ public class AlbumActivity extends BaseActivity implements
                     }
                 }
                 mView.toast(getResources().getQuantityString(messageRes, mLimitCount, mLimitCount));
-                button.setChecked(false, true);
+                button.setChecked(false);
             } else {
                 albumFile.setChecked(true);
                 mCheckedList.add(albumFile);

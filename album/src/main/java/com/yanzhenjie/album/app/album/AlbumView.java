@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -25,7 +26,6 @@ import com.yanzhenjie.album.impl.OnCheckedClickListener;
 import com.yanzhenjie.album.impl.OnItemClickListener;
 import com.yanzhenjie.album.util.AlbumUtils;
 import com.yanzhenjie.album.util.SystemBar;
-import com.yanzhenjie.album.widget.AlbumCheckBox;
 import com.yanzhenjie.album.widget.ColorProgressBar;
 import com.yanzhenjie.album.widget.divider.Api21ItemDivider;
 
@@ -130,7 +130,7 @@ class AlbumView extends Contract.AlbumView implements View.OnClickListener {
         mRecyclerView.setLayoutManager(mLayoutManager);
         int dividerSize = getResources().getDimensionPixelSize(R.dimen.album_dp_3);
         mRecyclerView.addItemDecoration(new Api21ItemDivider(Color.TRANSPARENT, dividerSize, dividerSize));
-        mAdapter = new AlbumAdapter(getContext(), hasCamera, choiceMode, mMode);
+        mAdapter = new AlbumAdapter(getContext(), hasCamera, choiceMode, mMode, widget.getMediaItemCheckSelector());
 
         //拍照，视频录制点击监听
         mAdapter.setAddClickListener(new OnItemClickListener() {
@@ -143,8 +143,8 @@ class AlbumView extends Contract.AlbumView implements View.OnClickListener {
         //选择框点击监听
         mAdapter.setCheckedClickListener(new OnCheckedClickListener() {
             @Override
-            public void onCheckedClick(AlbumCheckBox button, int position) {
-                button.setChecked(!button.isChecked(), true);
+            public void onCheckedClick(CompoundButton button, int position) {
+                //button.setChecked(!button.isChecked(), true);
                 getPresenter().tryCheckItem(button, position);
             }
         });
