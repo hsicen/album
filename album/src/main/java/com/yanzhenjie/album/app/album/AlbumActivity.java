@@ -85,6 +85,7 @@ public class AlbumActivity extends BaseActivity implements
     private LoadingDialog mLoadingDialog;
 
     private MediaReadTask mMediaReadTask;
+    private Boolean takeBack = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -328,7 +329,7 @@ public class AlbumActivity extends BaseActivity implements
                 .start();
     }
 
-    //拍照回调处理
+    /*** 拍照回调处理*/
     private Action<String> mCameraAction = new Action<String>() {
         @Override
         public void onAction(@NonNull String result) {
@@ -343,35 +344,30 @@ public class AlbumActivity extends BaseActivity implements
         }
     };
 
-    //拍照返回开始转化
+    /*** 拍照返回开始转化*/
     @Override
     public void onConvertStart() {
-        //showLoadingDialog();
-        //mLoadingDialog.setMessage(R.string.album_converting);
+        showLoadingDialog();
+        mLoadingDialog.setMessage(R.string.album_converting);
     }
 
-    //转化结果回调
+    /*** 转化结果回调*/
     @Override
     public void onConvertCallback(AlbumFile albumFile) {
         if (mChoiceMode == Album.MODE_SINGLE) {
-
             if (mFunction == Album.FUNCTION_CAMERA_VIDEO) {
                 long duration = albumFile.getDuration() / 1000;
                 if (duration <= 3) {
-                    addFileToList(albumFile);
                     Toast.makeText(this, "请选择3s以上的视频", Toast.LENGTH_SHORT).show();
+                    takeBack = true;
+                    addFileToList(albumFile);
                     return;
                 }
 
                 if (duration > 30) {
-                    addFileToList(albumFile);
                     Toast.makeText(this, "请选择30s以内的视频", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (albumFile.getSize() > 300 * 1024 * 1024) {  //B -> KB -> MB
+                    takeBack = true;
                     addFileToList(albumFile);
-                    Toast.makeText(this, "请选择300M以内的视频", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
@@ -390,7 +386,7 @@ public class AlbumActivity extends BaseActivity implements
             }
         }
 
-        //dismissLoadingDialog();
+        dismissLoadingDialog();
     }
 
     private void addFileToList(AlbumFile albumFile) {
@@ -410,14 +406,18 @@ public class AlbumActivity extends BaseActivity implements
             mView.notifyInsertItem(mHasCamera ? 1 : 0);
         }
 
-        mCheckedList.add(albumFile);
-        int count = mCheckedList.size();
-        mView.setCheckedCount(count);
-        mView.setSubTitle(count + "/" + mLimitCount);
+        if (!takeBack) {
+            mCheckedList.add(albumFile);
+            int count = mCheckedList.size();
+            mView.setCheckedCount(count);
+            mView.setSubTitle(count + "/" + mLimitCount);
+        }
 
         switch (mChoiceMode) {
             case Album.MODE_SINGLE: {
-                callbackResult();
+                if (takeBack) {
+                    takeBack = false;
+                } else callbackResult();
                 break;
             }
             case Album.MODE_MULTIPLE: {
