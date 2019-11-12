@@ -3,6 +3,7 @@ package com.yanzhenjie.album.app.album;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -93,6 +94,7 @@ public class AlbumActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initializeArgument();
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);
         setContentView(createView());
 
         mView = new AlbumView(this, this, mFunction);

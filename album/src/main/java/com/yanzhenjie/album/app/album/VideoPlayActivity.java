@@ -2,11 +2,13 @@ package com.yanzhenjie.album.app.album;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -14,6 +16,7 @@ import android.widget.VideoView;
 import com.yanzhenjie.album.AlbumFile;
 import com.yanzhenjie.album.R;
 import com.yanzhenjie.album.mvp.BaseActivity;
+import com.yanzhenjie.album.util.AlbumUtils;
 
 /**
  * <p>作者：hsicen  2019/11/8 9:55
@@ -30,6 +33,8 @@ public class VideoPlayActivity extends BaseActivity {
     private String mVideoPath;
     private TextView mTvFinish;
     private VideoView mVideoView;
+    private RelativeLayout mLayoutBottom;
+    private RelativeLayout mLayoutPanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,8 @@ public class VideoPlayActivity extends BaseActivity {
         mToolbar = findViewById(R.id.video_bar);
         mTvFinish = findViewById(R.id.tv_finish);
         mVideoView = findViewById(R.id.video_local);
+        mLayoutBottom = findViewById(R.id.layout_bottom);
+        mLayoutPanel = findViewById(R.id.rl_panel);
 
         initToolBar();
         initVariable();
@@ -55,6 +62,10 @@ public class VideoPlayActivity extends BaseActivity {
                 onBackPressed();
             }
         });
+
+
+        Log.d("hsc", "导航栏状态：" + AlbumUtils.checkHasNavigationBar(this));
+        Log.d("hsc", "导航栏高度：" + AlbumUtils.getNavigationBarHeight(this));
     }
 
     private void initVariable() {
@@ -71,6 +82,9 @@ public class VideoPlayActivity extends BaseActivity {
             @Override
             public void onPrepared(MediaPlayer mp) {
                 Log.d("hsc", "准备完成");
+                int videoWidth = mp.getVideoWidth();
+                int videoHeight = mp.getVideoHeight();
+                Log.d("hsc", "视频信息： " + videoHeight + " * " + videoWidth);
             }
         });
 
@@ -98,12 +112,15 @@ public class VideoPlayActivity extends BaseActivity {
 
         mVideoView.start();
         mVideoView.requestFocus();
+        mVideoView.setVisibility(View.VISIBLE);
+        mLayoutPanel.setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
+        hideStatusNavigationBar();
         mVideoView.resume();
     }
 
@@ -139,14 +156,17 @@ public class VideoPlayActivity extends BaseActivity {
         Intent intent = new Intent(activity, VideoPlayActivity.class);
         intent.putExtra("videoPath", path);
         activity.startActivity(intent);
+        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     /*** 隐藏状态栏和导航栏*/
     private void hideStatusNavigationBar() {
-        int uiFlags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.INVISIBLE | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+        int uiFlags = View.INVISIBLE | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
         getWindow().getDecorView().setSystemUiVisibility(uiFlags);
+        getWindow().setNavigationBarColor(Color.TRANSPARENT);
     }
 
     public interface VideoCallback {
