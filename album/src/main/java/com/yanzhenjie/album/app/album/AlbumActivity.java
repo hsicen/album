@@ -347,6 +347,12 @@ public class AlbumActivity extends BaseActivity implements
                     ArrayList<AlbumFile> tempList = new ArrayList<>();
                     tempList.add(albumFile);
                     onThumbnailCallback(tempList);
+
+                    if (mMediaScanner == null) {
+                        mMediaScanner = new MediaScanner(AlbumActivity.this);
+                    }
+                    mMediaScanner.scan(result);
+
                 } else scanAndConvert(result);
             } else scanAndConvert(result);
         }
@@ -672,6 +678,5 @@ public class AlbumActivity extends BaseActivity implements
         sResult = null;
         sCancel = null;
         super.finish();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 }

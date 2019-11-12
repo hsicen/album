@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/Album.MatchParent"
-    android:background="@color/albumColorPrimaryBlack">
+    android:background="#000000">
 
     <VideoView
         android:id="@+id/video_local"
@@ -15,11 +15,12 @@
 
     <RelativeLayout
         style="@style/Album.MatchParent"
-        android:fitsSystemWindows="true">
+        android:background="@color/albumTransparent">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar_layout"
-            style="@style/Album.AppBar.General.Transparent">
+            style="@style/Album.AppBar.General.Transparent"
+            android:fitsSystemWindows="true">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/video_bar"

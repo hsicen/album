@@ -2,7 +2,6 @@ package com.yanzhenjie.album.app.album;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,7 +14,6 @@ import android.widget.VideoView;
 import com.yanzhenjie.album.AlbumFile;
 import com.yanzhenjie.album.R;
 import com.yanzhenjie.album.mvp.BaseActivity;
-import com.yanzhenjie.album.util.SystemBar;
 
 /**
  * <p>作者：hsicen  2019/11/8 9:55
@@ -49,9 +47,6 @@ public class VideoPlayActivity extends BaseActivity {
     }
 
     private void initToolBar() {
-        SystemBar.invasionStatusBar(this);
-        SystemBar.invasionNavigationBar(this);
-        SystemBar.setStatusBarColor(this, Color.TRANSPARENT);
         setSupportActionBar(mToolbar);
         mToolbar.setTitle(R.string.album_text_empty);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -137,12 +132,6 @@ public class VideoPlayActivity extends BaseActivity {
         });
     }
 
-    @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-    }
-
     /*** 跳转视频播放界面
      * @param activity activity
      * @param path 视频路径 */
@@ -150,15 +139,13 @@ public class VideoPlayActivity extends BaseActivity {
         Intent intent = new Intent(activity, VideoPlayActivity.class);
         intent.putExtra("videoPath", path);
         activity.startActivity(intent);
-        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     /*** 隐藏状态栏和导航栏*/
     private void hideStatusNavigationBar() {
-        int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN //hide statusBar
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION; //hide navigationBar
+        int uiFlags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.INVISIBLE | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
         getWindow().getDecorView().setSystemUiVisibility(uiFlags);
     }
 
