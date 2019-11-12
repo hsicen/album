@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.yanzhenjie.album.Action;
 import com.yanzhenjie.album.Album;
@@ -165,6 +166,7 @@ public class CameraActivity extends BaseActivity {
     }
 
     private void callbackResult() {
+        Log.d("hsc", "系统拍照回调：" + System.currentTimeMillis());
         if (sResult != null) sResult.onAction(mCameraFilePath);
         sResult = null;
         sCancel = null;

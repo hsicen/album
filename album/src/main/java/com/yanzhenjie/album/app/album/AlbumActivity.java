@@ -3,11 +3,13 @@ package com.yanzhenjie.album.app.album;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -29,7 +31,6 @@ import com.yanzhenjie.album.app.album.data.ThumbnailBuildTask;
 import com.yanzhenjie.album.impl.OnItemClickListener;
 import com.yanzhenjie.album.mvp.BaseActivity;
 import com.yanzhenjie.album.util.AlbumUtils;
-import com.yanzhenjie.album.widget.AlbumCheckBox;
 import com.yanzhenjie.album.widget.LoadingDialog;
 import com.yanzhenjie.mediascanner.MediaScanner;
 
@@ -205,6 +206,7 @@ public class AlbumActivity extends BaseActivity implements
                     String imagePath = NullActivity.parsePath(data);
                     String mimeType = AlbumUtils.getMimeType(imagePath);
                     if (!TextUtils.isEmpty(mimeType)) mCameraAction.onAction(imagePath);
+                    Log.d("hsc", "拍照回调：" + System.currentTimeMillis());
                 } else {
                     callbackCancel();
                 }
@@ -307,7 +309,7 @@ public class AlbumActivity extends BaseActivity implements
         Album.camera(this)
                 .image()
                 .filePath(filePath)
-                .onResult(mCameraAction)
+                .onResult(mCameraAction) //拍照回调处理
                 .start();
     }
 
@@ -326,7 +328,7 @@ public class AlbumActivity extends BaseActivity implements
                 .quality(mQuality)
                 .limitDuration(mLimitDuration)
                 .limitBytes(mLimitBytes)
-                .onResult(mCameraAction) //拍照回调处理
+                .onResult(mCameraAction) //拍摄回调处理
                 .start();
     }
 
@@ -334,27 +336,45 @@ public class AlbumActivity extends BaseActivity implements
     private Action<String> mCameraAction = new Action<String>() {
         @Override
         public void onAction(@NonNull String result) {
-            if (mMediaScanner == null) {
-                mMediaScanner = new MediaScanner(AlbumActivity.this);
-            }
-            mMediaScanner.scan(result);
-
-            PathConversion conversion = new PathConversion(sSizeFilter, sMimeFilter, sDurationFilter);
-            PathConvertTask task = new PathConvertTask(conversion, AlbumActivity.this);
-            task.execute(result);
+            Log.d("hsc", "列表页面回调：" + System.currentTimeMillis());
+            if (mChoiceMode == Album.MODE_SINGLE && mFunction == Album.FUNCTION_CAMERA_VIDEO) {
+                MediaMetadataRetriever media = new MediaMetadataRetriever();
+                media.setDataSource(result);
+                long duration = Long.parseLong(media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000;
+                if (duration > 3 && duration <= 30) {
+                    AlbumFile albumFile = new AlbumFile();
+                    albumFile.setPath(result);
+                    ArrayList<AlbumFile> tempList = new ArrayList<>();
+                    tempList.add(albumFile);
+                    onThumbnailCallback(tempList);
+                } else scanAndConvert(result);
+            } else scanAndConvert(result);
         }
     };
+
+    /*** 扫描文件库*/
+    private void scanAndConvert(@NonNull String result) {
+        if (mMediaScanner == null) {
+            mMediaScanner = new MediaScanner(AlbumActivity.this);
+        }
+        mMediaScanner.scan(result);
+
+        PathConversion conversion = new PathConversion(sSizeFilter, sMimeFilter, sDurationFilter);
+        PathConvertTask task = new PathConvertTask(conversion, AlbumActivity.this);
+        task.execute(result);
+    }
 
     /*** 拍照返回开始转化*/
     @Override
     public void onConvertStart() {
-        showLoadingDialog();
-        mLoadingDialog.setMessage(R.string.album_converting);
+        //showLoadingDialog();
+        //mLoadingDialog.setMessage(R.string.album_converting);
     }
 
     /*** 转化结果回调*/
     @Override
     public void onConvertCallback(AlbumFile albumFile) {
+        Log.d("hsc", "转化处理回调：" + System.currentTimeMillis());
         if (mChoiceMode == Album.MODE_SINGLE) {
             if (mFunction == Album.FUNCTION_CAMERA_VIDEO) {
                 long duration = albumFile.getDuration() / 1000;
@@ -387,7 +407,7 @@ public class AlbumActivity extends BaseActivity implements
             }
         }
 
-        dismissLoadingDialog();
+        //dismissLoadingDialog();
     }
 
     private void addFileToList(AlbumFile albumFile) {
@@ -616,6 +636,7 @@ public class AlbumActivity extends BaseActivity implements
     public void onThumbnailCallback(ArrayList<AlbumFile> albumFiles) {
         if (sResult != null) sResult.onAction(albumFiles);  //回调成功给调用层
         //dismissLoadingDialog();
+        Log.d("hsc", "最终结束回调：" + System.currentTimeMillis());
         finish();
     }
 

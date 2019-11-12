@@ -4,6 +4,7 @@ import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.yanzhenjie.album.AlbumFile;
 import com.yanzhenjie.album.Filter;
@@ -62,6 +63,7 @@ public class PathConversion {
         }
 
         if (mediaType == AlbumFile.TYPE_VIDEO) {
+            Log.d("hsc", "MediaPlayer:  " + System.currentTimeMillis());
             MediaPlayer player = new MediaPlayer();
             try {
                 player.setDataSource(filePath);
@@ -75,6 +77,8 @@ public class PathConversion {
             if (mDurationFilter != null && mDurationFilter.filter(albumFile.getDuration())) {
                 albumFile.setDisable(true);
             }
+
+            Log.d("hsc", "MediaPlayer:  " + System.currentTimeMillis());
         }
         return albumFile;
     }
