@@ -94,7 +94,6 @@ public class AlbumActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initializeArgument();
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
         setContentView(createView());
 
         mView = new AlbumView(this, this, mFunction);
