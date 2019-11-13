@@ -101,7 +101,6 @@ public class VideoPlayActivity extends BaseActivity {
                 Log.d("hsc", "0视频控件信息高*宽： " + mVideoView.getHeight() + " * " + mVideoView.getWidth());
                 Log.d("hsc", "0根布局信息高*宽： " + mLayoutRoot.getHeight() + " * " + mLayoutRoot.getWidth());
 
-
                 reFinishSize(height);
             }
         });
@@ -173,14 +172,8 @@ public class VideoPlayActivity extends BaseActivity {
         mTvFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //sCallback.onVideoBack();
-                //finish();
-
-                int width = getResources().getDisplayMetrics().widthPixels;
-                int height = getResources().getDisplayMetrics().heightPixels;
-                Log.d("hsc", "屏幕信息高*宽： " + height + " * " + width);
-                Log.d("hsc", "视频控件信息高*宽： " + mVideoView.getHeight() + " * " + mVideoView.getWidth());
-                Log.d("hsc", "根布局信息高*宽： " + mLayoutRoot.getHeight() + " * " + mLayoutRoot.getWidth());
+                sCallback.onVideoBack();
+                finish();
             }
         });
     }
