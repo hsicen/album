@@ -34,7 +34,7 @@ public class VideoPlayActivity extends BaseActivity {
     private TextView mTvFinish;
     private VideoView mVideoView;
     private RelativeLayout mLayoutBottom;
-    private RelativeLayout mLayoutPanel;
+    private RelativeLayout mLayoutRoot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,7 @@ public class VideoPlayActivity extends BaseActivity {
         mTvFinish = findViewById(R.id.tv_finish);
         mVideoView = findViewById(R.id.video_local);
         mLayoutBottom = findViewById(R.id.layout_bottom);
-        mLayoutPanel = findViewById(R.id.rl_panel);
+        mLayoutRoot = findViewById(R.id.rl_root);
 
         initToolBar();
         initVariable();
@@ -84,7 +84,21 @@ public class VideoPlayActivity extends BaseActivity {
                 Log.d("hsc", "准备完成");
                 int videoWidth = mp.getVideoWidth();
                 int videoHeight = mp.getVideoHeight();
-                Log.d("hsc", "视频信息： " + videoHeight + " * " + videoWidth);
+                Log.d("hsc", "导航栏的：" + AlbumUtils.getNavigationBarHeight(VideoPlayActivity.this));
+                int width = getResources().getDisplayMetrics().widthPixels;
+                int height = getResources().getDisplayMetrics().heightPixels;
+                Log.d("hsc", "视频信息高*宽： " + videoHeight + " * " + videoWidth);
+                Log.d("hsc", "屏幕信息高*宽： " + height + " * " + width);
+                Log.d("hsc", "视频控件信息高*宽： " + mVideoView.getHeight() + " * " + mVideoView.getWidth());
+                Log.d("hsc", "根布局信息高*宽： " + mLayoutRoot.getHeight() + " * " + mLayoutRoot.getWidth());
+
+
+                if (videoHeight > videoWidth && (height - mVideoView.getHeight()) > 0) {
+                    Log.d("hsc", "需要调整导航栏和完成按钮     " + (height / 2 - mVideoView.getHeight() / 2));
+                    mLayoutBottom.setPadding(0, 0, 0, (height - mVideoView.getHeight()) / 2);
+                } else {
+                    mLayoutBottom.setPadding(0, 0, 0, 0);
+                }
             }
         });
 
@@ -113,7 +127,7 @@ public class VideoPlayActivity extends BaseActivity {
         mVideoView.start();
         mVideoView.requestFocus();
         mVideoView.setVisibility(View.VISIBLE);
-        mLayoutPanel.setVisibility(View.VISIBLE);
+        mLayoutBottom.setVisibility(View.VISIBLE);
     }
 
     @Override

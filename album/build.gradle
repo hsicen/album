@@ -19,4 +19,6 @@ dependencies {
     implementation rootProject.ext.dependencies.recyclerView
     implementation rootProject.ext.dependencies.cardView
     api rootProject.ext.dependencies.mediaScanner
+
+    //implementation 'com.android.support.constraint:constraint-layout:2.0.0-alpha2'
 }
