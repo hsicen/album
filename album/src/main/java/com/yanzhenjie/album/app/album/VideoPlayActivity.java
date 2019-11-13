@@ -95,7 +95,10 @@ public class VideoPlayActivity extends BaseActivity {
 
                 if (videoHeight > videoWidth && (height - mVideoView.getHeight()) > 0) {
                     Log.d("hsc", "需要调整导航栏和完成按钮     " + (height / 2 - mVideoView.getHeight() / 2));
-                    mLayoutBottom.setPadding(0, 0, 0, (height - mVideoView.getHeight()) / 2);
+                    int tempHeight = height - 1920;
+
+                    //判断导航栏是否存在
+                    mLayoutBottom.setPadding(0, 0, 0, tempHeight / 2);
                 } else {
                     mLayoutBottom.setPadding(0, 0, 0, 0);
                 }
@@ -178,6 +181,7 @@ public class VideoPlayActivity extends BaseActivity {
         int uiFlags = View.INVISIBLE | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LOW_PROFILE
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
         getWindow().getDecorView().setSystemUiVisibility(uiFlags);
         getWindow().setNavigationBarColor(Color.TRANSPARENT);

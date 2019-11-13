@@ -20,7 +20,8 @@
         android:id="@+id/rl_bottom_nav"
         style="@style/Album.MatchParent.SheetBottom"
         android:layout_alignParentBottom="true"
-        android:background="@color/albumSheetBottom">
+        android:background="@color/albumSheetBottom"
+        android:fitsSystemWindows="true">
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_switch_dir"
