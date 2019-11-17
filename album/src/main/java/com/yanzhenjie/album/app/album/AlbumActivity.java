@@ -340,8 +340,9 @@ public class AlbumActivity extends BaseActivity implements
             if (mChoiceMode == Album.MODE_SINGLE && mFunction == Album.FUNCTION_CAMERA_VIDEO) {
                 MediaMetadataRetriever media = new MediaMetadataRetriever();
                 media.setDataSource(result);
-                long duration = Long.parseLong(media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)) / 1000;
-                if (duration > 3 && duration <= 30) {
+                long duration = Long.parseLong(media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+                long seconds = duration/1000;
+                if (seconds > 3 && seconds <= 30) {
                     AlbumFile albumFile = new AlbumFile();
                     albumFile.setPath(result);
                     albumFile.setDuration(duration);
