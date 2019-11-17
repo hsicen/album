@@ -138,25 +138,12 @@ public class AlbumUtils {
                                  @IntRange(from = 0, to = 1) int quality,
                                  @IntRange(from = 1) long duration,
                                  @IntRange(from = 1) long limitBytes) {
-        String brand = Build.BRAND;
-
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         Uri uri = getUri(activity, outPath);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-
-        switch (brand) {
-            case "HUAWEI":
-            case "Meizu":
-            case "Xiaomi":
-            case "samsung":
-                intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
-                break;
-            default:
-                intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30L);
-                break;
-        }
-
+        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30L);
+        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
         intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, limitBytes);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
