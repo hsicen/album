@@ -3,7 +3,6 @@ package com.yanzhenjie.album.app.album;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -345,6 +344,7 @@ public class AlbumActivity extends BaseActivity implements
                 if (duration > 3 && duration <= 30) {
                     AlbumFile albumFile = new AlbumFile();
                     albumFile.setPath(result);
+                    albumFile.setDuration(duration);
                     ArrayList<AlbumFile> tempList = new ArrayList<>();
                     tempList.add(albumFile);
                     onThumbnailCallback(tempList);
