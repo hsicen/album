@@ -341,7 +341,7 @@ public class AlbumActivity extends BaseActivity implements
                 MediaMetadataRetriever media = new MediaMetadataRetriever();
                 media.setDataSource(result);
                 long duration = Long.parseLong(media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-                long seconds = duration/1000;
+                long seconds = duration / 1000;
                 if (seconds > 3 && seconds <= 30) {
                     AlbumFile albumFile = new AlbumFile();
                     albumFile.setPath(result);

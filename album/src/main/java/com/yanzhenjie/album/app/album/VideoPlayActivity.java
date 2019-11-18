@@ -34,7 +34,6 @@ public class VideoPlayActivity extends BaseActivity {
     private TextView mTvFinish;
     private VideoView mVideoView;
     private RelativeLayout mLayoutBottom;
-    private RelativeLayout mLayoutRoot;
     private int videoWidth;
     private int videoHeight;
 
@@ -47,18 +46,11 @@ public class VideoPlayActivity extends BaseActivity {
         mTvFinish = findViewById(R.id.tv_finish);
         mVideoView = findViewById(R.id.video_local);
         mLayoutBottom = findViewById(R.id.layout_bottom);
-        mLayoutRoot = findViewById(R.id.rl_root);
 
         mVideoView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                int width = getResources().getDisplayMetrics().widthPixels;
                 int height = getResources().getDisplayMetrics().heightPixels;
-
-                Log.d("hsc", "1屏幕信息高*宽： " + height + " * " + width);
-                Log.d("hsc", "1视频控件信息高*宽： " + mVideoView.getHeight() + " * " + mVideoView.getWidth());
-                Log.d("hsc", "1根布局信息高*宽： " + mLayoutRoot.getHeight() + " * " + mLayoutRoot.getWidth());
-
                 reFinishSize(height);
             }
         });
@@ -94,13 +86,12 @@ public class VideoPlayActivity extends BaseActivity {
                 videoWidth = mp.getVideoWidth();
                 videoHeight = mp.getVideoHeight();
 
-                int width = getResources().getDisplayMetrics().widthPixels;
-                int height = getResources().getDisplayMetrics().heightPixels;
-                Log.d("hsc", "0视频信息高*宽： " + videoHeight + " * " + videoWidth);
-                Log.d("hsc", "0屏幕信息高*宽： " + height + " * " + width);
-                Log.d("hsc", "0视频控件信息高*宽： " + mVideoView.getHeight() + " * " + mVideoView.getWidth());
-                Log.d("hsc", "0根布局信息高*宽： " + mLayoutRoot.getHeight() + " * " + mLayoutRoot.getWidth());
+                if (0 == videoWidth && 0 == videoHeight) {
+                    Toast.makeText(VideoPlayActivity.this, "该格式不支持预览，可发布成功后查看", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
+                int height = getResources().getDisplayMetrics().heightPixels;
                 reFinishSize(height);
             }
         });
@@ -116,8 +107,7 @@ public class VideoPlayActivity extends BaseActivity {
         mVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
-                Log.d("hsc", "视频播放出错");
-                Toast.makeText(VideoPlayActivity.this, "视频播放出错", Toast.LENGTH_SHORT).show();
+                Toast.makeText(VideoPlayActivity.this, "该格式不支持预览，可发布成功后查看", Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
@@ -126,7 +116,6 @@ public class VideoPlayActivity extends BaseActivity {
     /*** 重置Button位置*/
     private void reFinishSize(int height) {
         if (videoHeight > videoWidth && (height - mVideoView.getHeight()) > 0) {
-            Log.d("hsc", "需要调整导航栏和完成按钮     " + (height / 2 - mVideoView.getHeight() / 2));
             int tempHeight = height - mVideoView.getHeight();
             //判断导航栏是否存在
             mLayoutBottom.setPadding(0, 0, 0, tempHeight / 2);
