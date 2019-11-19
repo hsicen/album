@@ -1,10 +1,9 @@
 package com.otaliastudios.cameraview.controls;
 
 
-import com.otaliastudios.cameraview.CameraView;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
+import com.otaliastudios.cameraview.CameraView;
 
 /**
  * The preview engine to be used.

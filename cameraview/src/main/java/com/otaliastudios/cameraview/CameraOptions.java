@@ -13,26 +13,26 @@ import android.os.Build;
 import android.util.Range;
 import android.util.Rational;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+
 import com.otaliastudios.cameraview.controls.Audio;
 import com.otaliastudios.cameraview.controls.Control;
 import com.otaliastudios.cameraview.controls.Engine;
 import com.otaliastudios.cameraview.controls.Facing;
 import com.otaliastudios.cameraview.controls.Flash;
-import com.otaliastudios.cameraview.controls.Preview;
-import com.otaliastudios.cameraview.engine.mappers.Camera1Mapper;
-import com.otaliastudios.cameraview.engine.mappers.Camera2Mapper;
-import com.otaliastudios.cameraview.gesture.GestureAction;
 import com.otaliastudios.cameraview.controls.Grid;
 import com.otaliastudios.cameraview.controls.Hdr;
 import com.otaliastudios.cameraview.controls.Mode;
+import com.otaliastudios.cameraview.controls.Preview;
 import com.otaliastudios.cameraview.controls.VideoCodec;
 import com.otaliastudios.cameraview.controls.WhiteBalance;
+import com.otaliastudios.cameraview.engine.mappers.Camera1Mapper;
+import com.otaliastudios.cameraview.engine.mappers.Camera2Mapper;
+import com.otaliastudios.cameraview.gesture.GestureAction;
 import com.otaliastudios.cameraview.internal.utils.CamcorderProfiles;
 import com.otaliastudios.cameraview.size.AspectRatio;
 import com.otaliastudios.cameraview.size.Size;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -225,7 +225,7 @@ public class CameraOptions {
         // Zoom
         Float maxZoom = cameraCharacteristics.get(
                 CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM);
-        if(maxZoom != null) {
+        if (maxZoom != null) {
             zoomSupported = maxZoom > 1;
         }
 
@@ -409,9 +409,9 @@ public class CameraOptions {
     /**
      * Set of supported facing values.
      *
+     * @return a collection of supported values.
      * @see Facing#BACK
      * @see Facing#FRONT
-     * @return a collection of supported values.
      */
     @NonNull
     public Collection<Facing> getSupportedFacing() {
@@ -421,11 +421,11 @@ public class CameraOptions {
     /**
      * Set of supported flash values.
      *
+     * @return a collection of supported values.
      * @see Flash#AUTO
      * @see Flash#OFF
      * @see Flash#ON
      * @see Flash#TORCH
-     * @return a collection of supported values.
      */
     @NonNull
     public Collection<Flash> getSupportedFlash() {
@@ -435,12 +435,12 @@ public class CameraOptions {
     /**
      * Set of supported white balance values.
      *
+     * @return a collection of supported values.
      * @see WhiteBalance#AUTO
      * @see WhiteBalance#INCANDESCENT
      * @see WhiteBalance#FLUORESCENT
      * @see WhiteBalance#DAYLIGHT
      * @see WhiteBalance#CLOUDY
-     * @return a collection of supported values.
      */
     @NonNull
     public Collection<WhiteBalance> getSupportedWhiteBalance() {
@@ -450,9 +450,9 @@ public class CameraOptions {
     /**
      * Set of supported hdr values.
      *
+     * @return a collection of supported values.
      * @see Hdr#OFF
      * @see Hdr#ON
-     * @return a collection of supported values.
      */
     @SuppressWarnings("WeakerAccess")
     @NonNull
@@ -486,9 +486,9 @@ public class CameraOptions {
      * Whether exposure correction is supported. If this is false, calling
      * {@link CameraView#setExposureCorrection(float)} has no effect.
      *
+     * @return whether exposure correction is supported.
      * @see #getExposureCorrectionMinValue()
      * @see #getExposureCorrectionMaxValue()
-     * @return whether exposure correction is supported.
      */
     public boolean isExposureCorrectionSupported() {
         return exposureCorrectionSupported;

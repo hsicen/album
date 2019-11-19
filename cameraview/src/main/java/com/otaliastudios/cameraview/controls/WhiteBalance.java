@@ -1,11 +1,10 @@
 package com.otaliastudios.cameraview.controls;
 
 
+import androidx.annotation.NonNull;
+
 import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * White balance values control the white balance settings.

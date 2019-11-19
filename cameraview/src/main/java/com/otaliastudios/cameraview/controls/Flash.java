@@ -1,11 +1,10 @@
 package com.otaliastudios.cameraview.controls;
 
 
+import androidx.annotation.NonNull;
+
 import com.otaliastudios.cameraview.CameraOptions;
 import com.otaliastudios.cameraview.CameraView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * Flash value indicates the flash mode to be used.

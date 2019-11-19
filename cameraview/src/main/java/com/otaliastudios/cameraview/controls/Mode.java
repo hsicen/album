@@ -1,10 +1,9 @@
 package com.otaliastudios.cameraview.controls;
 
 
-import com.otaliastudios.cameraview.CameraView;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
+import com.otaliastudios.cameraview.CameraView;
 
 import java.io.File;
 
@@ -19,7 +18,7 @@ public enum Mode implements Control {
 
     /**
      * Session used to capture pictures.
-     *
+     * <p>
      * - {@link CameraView#takeVideo(File)} will throw an exception
      * - Only the camera permission is requested
      * - Capture size is chosen according to the current picture size selector
@@ -28,7 +27,7 @@ public enum Mode implements Control {
 
     /**
      * Session used to capture videos.
-     *
+     * <p>
      * - {@link CameraView#takePicture()} will throw an exception
      * - Camera and audio record permissions are requested
      * - Capture size is chosen according to the current video size selector

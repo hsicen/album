@@ -1,10 +1,9 @@
 package com.otaliastudios.cameraview.controls;
 
 
-import com.otaliastudios.cameraview.CameraView;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
+import com.otaliastudios.cameraview.CameraView;
 
 /**
  * Hdr values indicate whether to use high dynamic range techniques when capturing pictures.
