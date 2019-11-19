@@ -30,6 +30,7 @@ import com.yanzhenjie.album.app.album.data.PathConvertTask;
 import com.yanzhenjie.album.app.album.data.ThumbnailBuildTask;
 import com.yanzhenjie.album.impl.OnItemClickListener;
 import com.yanzhenjie.album.mvp.BaseActivity;
+import com.yanzhenjie.album.record.VideoRecordActivity;
 import com.yanzhenjie.album.util.AlbumUtils;
 import com.yanzhenjie.album.widget.LoadingDialog;
 import com.yanzhenjie.mediascanner.MediaScanner;
@@ -315,7 +316,7 @@ public class AlbumActivity extends BaseActivity implements
 
     /*** 点击录制视频逻辑处理*/
     private void takeVideo() {
-        String filePath;
+        /*String filePath;
         if (mCurrentFolder == 0) {
             filePath = AlbumUtils.randomMP4Path();
         } else {
@@ -329,7 +330,9 @@ public class AlbumActivity extends BaseActivity implements
                 .limitDuration(mLimitDuration)
                 .limitBytes(mLimitBytes)
                 .onResult(mCameraAction) //拍摄回调处理
-                .start();
+                .start();*/
+        //todo 自定义视频拍摄
+        VideoRecordActivity.start(this);
     }
 
     /*** 拍照回调处理*/

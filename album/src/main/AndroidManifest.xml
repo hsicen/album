@@ -58,6 +58,12 @@
             android:theme="@style/Album.Theme.Activity"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
 
+        <activity
+            android:name=".record.VideoRecordActivity"
+            android:configChanges="screenLayout|keyboardHidden"
+            android:hardwareAccelerated="true"
+            android:theme="@style/Album.Theme.Activity.VideoRecord" />
+
         <provider
             android:name=".provider.CameraFileProvider"
             android:authorities="${applicationId}.app.file.provider"
