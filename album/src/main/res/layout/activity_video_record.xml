@@ -7,8 +7,7 @@
     android:layout_height="match_parent"
     android:background="#FF444444">
 
-    <!-- Camera -->
-    <com.otaliastudios.cameraview.CameraView
+    <cameraview.CameraView
         android:id="@+id/mCamera"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,11 +25,14 @@
         app:cameraGestureScrollVertical="none"
         app:cameraGestureTap="autoFocus"
         app:cameraGrid="off"
+        app:cameraHdr="on"
         app:cameraMode="video"
         app:cameraPlaySounds="true"
-        app:cameraPreview="glSurface">
+        app:cameraPreview="glSurface"
+        app:cameraPreviewFrameRate="30"
+        app:cameraVideoCodec="h264">
 
-    </com.otaliastudios.cameraview.CameraView>
+    </cameraview.CameraView>
 
     <LinearLayout
         android:layout_width="wrap_content"

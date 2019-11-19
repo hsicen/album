@@ -7,18 +7,18 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
-import com.otaliastudios.cameraview.CameraListener;
-import com.otaliastudios.cameraview.CameraOptions;
-import com.otaliastudios.cameraview.CameraView;
-import com.otaliastudios.cameraview.gesture.Gesture;
-import com.otaliastudios.cameraview.gesture.GestureAction;
-import com.otaliastudios.cameraview.overlay.Overlay;
-import com.otaliastudios.cameraview.overlay.OverlayLayout;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import cameraview.CameraListener;
+import cameraview.CameraOptions;
+import cameraview.CameraView;
+import cameraview.gesture.Gesture;
+import cameraview.gesture.GestureAction;
+import cameraview.overlay.Overlay;
+import cameraview.overlay.OverlayLayout;
 
 /**
  * Controls that we want to display in a ControlView.
@@ -135,7 +135,7 @@ public abstract class Option<T> {
         }
     }
 
-    private static abstract class ControlOption<T extends com.otaliastudios.cameraview.controls.Control> extends Option<T> {
+    private static abstract class ControlOption<T extends cameraview.controls.Control> extends Option<T> {
         private final Class<T> controlClass;
 
         ControlOption(@NonNull Class<T> controlClass, String name) {
@@ -161,19 +161,19 @@ public abstract class Option<T> {
         }
     }
 
-    public static class Mode extends ControlOption<com.otaliastudios.cameraview.controls.Mode> {
+    public static class Mode extends ControlOption<cameraview.controls.Mode> {
         public Mode() {
-            super(com.otaliastudios.cameraview.controls.Mode.class, "Mode");
+            super(cameraview.controls.Mode.class, "Mode");
         }
     }
 
-    public static class Engine extends ControlOption<com.otaliastudios.cameraview.controls.Engine> {
+    public static class Engine extends ControlOption<cameraview.controls.Engine> {
         public Engine() {
-            super(com.otaliastudios.cameraview.controls.Engine.class, "Engine");
+            super(cameraview.controls.Engine.class, "Engine");
         }
 
         @Override
-        public void set(final @NonNull CameraView view, final @NonNull com.otaliastudios.cameraview.controls.Engine value) {
+        public void set(final @NonNull CameraView view, final @NonNull cameraview.controls.Engine value) {
             boolean started = view.isOpened();
             if (started) {
                 view.addCameraListener(new CameraListener() {
@@ -192,13 +192,13 @@ public abstract class Option<T> {
         }
     }
 
-    public static class Preview extends ControlOption<com.otaliastudios.cameraview.controls.Preview> {
+    public static class Preview extends ControlOption<cameraview.controls.Preview> {
         public Preview() {
-            super(com.otaliastudios.cameraview.controls.Preview.class, "Preview Surface");
+            super(cameraview.controls.Preview.class, "Preview Surface");
         }
 
         @Override
-        public void set(final @NonNull CameraView view, final @NonNull com.otaliastudios.cameraview.controls.Preview value) {
+        public void set(final @NonNull CameraView view, final @NonNull cameraview.controls.Preview value) {
             boolean opened = view.isOpened();
             if (opened) {
                 view.addCameraListener(new CameraListener() {
@@ -218,7 +218,7 @@ public abstract class Option<T> {
 
         // This is really tricky since the preview can only be changed when not attached to window.
         private void applyPreview(@NonNull CameraView cameraView,
-                                  @NonNull com.otaliastudios.cameraview.controls.Preview newPreview) {
+                                  @NonNull cameraview.controls.Preview newPreview) {
             ViewGroup.LayoutParams params = cameraView.getLayoutParams();
             ViewGroup parent = (ViewGroup) cameraView.getParent();
             int index = 0;
@@ -234,21 +234,21 @@ public abstract class Option<T> {
         }
     }
 
-    public static class Flash extends ControlOption<com.otaliastudios.cameraview.controls.Flash> {
+    public static class Flash extends ControlOption<cameraview.controls.Flash> {
         public Flash() {
-            super(com.otaliastudios.cameraview.controls.Flash.class, "Flash");
+            super(cameraview.controls.Flash.class, "Flash");
         }
     }
 
-    public static class WhiteBalance extends ControlOption<com.otaliastudios.cameraview.controls.WhiteBalance> {
+    public static class WhiteBalance extends ControlOption<cameraview.controls.WhiteBalance> {
         public WhiteBalance() {
-            super(com.otaliastudios.cameraview.controls.WhiteBalance.class, "White Balance");
+            super(cameraview.controls.WhiteBalance.class, "White Balance");
         }
     }
 
-    public static class Hdr extends ControlOption<com.otaliastudios.cameraview.controls.Hdr> {
+    public static class Hdr extends ControlOption<cameraview.controls.Hdr> {
         public Hdr() {
-            super(com.otaliastudios.cameraview.controls.Hdr.class, "HDR");
+            super(cameraview.controls.Hdr.class, "HDR");
         }
     }
 
@@ -300,15 +300,15 @@ public abstract class Option<T> {
         }
     }
 
-    public static class VideoCodec extends ControlOption<com.otaliastudios.cameraview.controls.VideoCodec> {
+    public static class VideoCodec extends ControlOption<cameraview.controls.VideoCodec> {
         public VideoCodec() {
-            super(com.otaliastudios.cameraview.controls.VideoCodec.class, "Video Codec");
+            super(cameraview.controls.VideoCodec.class, "Video Codec");
         }
     }
 
-    public static class Audio extends ControlOption<com.otaliastudios.cameraview.controls.Audio> {
+    public static class Audio extends ControlOption<cameraview.controls.Audio> {
         public Audio() {
-            super(com.otaliastudios.cameraview.controls.Audio.class, "Audio");
+            super(cameraview.controls.Audio.class, "Audio");
         }
     }
 
@@ -442,9 +442,9 @@ public abstract class Option<T> {
         }
     }
 
-    public static class Grid extends ControlOption<com.otaliastudios.cameraview.controls.Grid> {
+    public static class Grid extends ControlOption<cameraview.controls.Grid> {
         public Grid() {
-            super(com.otaliastudios.cameraview.controls.Grid.class, "Grid Lines");
+            super(cameraview.controls.Grid.class, "Grid Lines");
         }
     }
 
@@ -471,7 +471,6 @@ public abstract class Option<T> {
         @Override
         public Pair<Integer, String> get(@NonNull CameraView view) {
             for (Pair<Integer, String> pair : ALL) {
-                //noinspection ConstantConditions
                 if (pair.first == view.getGridColor()) {
                     return pair;
                 }

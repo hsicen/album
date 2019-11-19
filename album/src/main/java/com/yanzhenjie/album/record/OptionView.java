@@ -14,11 +14,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.otaliastudios.cameraview.CameraOptions;
-import com.otaliastudios.cameraview.CameraView;
 import com.yanzhenjie.album.R;
 
 import java.util.ArrayList;
+
+import cameraview.CameraOptions;
+import cameraview.CameraView;
 
 @SuppressLint("ViewConstructor")
 public class OptionView<Value> extends LinearLayout implements Spinner.OnItemSelectedListener {

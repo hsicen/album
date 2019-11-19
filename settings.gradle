@@ -1,1 +1,1 @@
-include ':sample', ':album', ':cameraview'
+include ':sample', ':album'

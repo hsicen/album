@@ -20,17 +20,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
-import com.otaliastudios.cameraview.CameraException;
-import com.otaliastudios.cameraview.CameraListener;
-import com.otaliastudios.cameraview.CameraLogger;
-import com.otaliastudios.cameraview.CameraOptions;
-import com.otaliastudios.cameraview.CameraView;
-import com.otaliastudios.cameraview.PictureResult;
-import com.otaliastudios.cameraview.VideoResult;
-import com.otaliastudios.cameraview.controls.Mode;
-import com.otaliastudios.cameraview.controls.Preview;
-import com.otaliastudios.cameraview.frame.Frame;
-import com.otaliastudios.cameraview.frame.FrameProcessor;
 import com.yanzhenjie.album.R;
 import com.yanzhenjie.album.app.album.VideoPlayActivity;
 
@@ -38,6 +27,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+
+import cameraview.CameraException;
+import cameraview.CameraListener;
+import cameraview.CameraLogger;
+import cameraview.CameraOptions;
+import cameraview.CameraView;
+import cameraview.PictureResult;
+import cameraview.VideoResult;
+import cameraview.controls.Mode;
+import cameraview.controls.Preview;
+import cameraview.frame.Frame;
+import cameraview.frame.FrameProcessor;
 
 public class VideoRecordActivity extends AppCompatActivity implements View.OnClickListener, OptionView.Callback {
 
