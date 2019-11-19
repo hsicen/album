@@ -46,7 +46,7 @@
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_margin="16dp"
-            android:background="@drawable/background"
+            android:background="#00000000"
             android:elevation="3dp"
             app:srcCompat="@drawable/ic_switch" />
     </LinearLayout>
