@@ -300,7 +300,6 @@ public class VideoRecordActivity extends AppCompatActivity implements
         if (id == R.id.edit) {
             edit();
         } else if (id == R.id.captureVideo) {
-            turnOffAudio(true);
             captureVideo();
         } else if (id == R.id.toggleCamera) {
             toggleCamera();
@@ -455,10 +454,6 @@ public class VideoRecordActivity extends AppCompatActivity implements
             mBtnRecord.stopCountDown();
             Toast.makeText(this, "视频录制失败", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void turnOffAudio(boolean isTurnOff) {
-        ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).setSpeakerphoneOn(false);
     }
 
     @Override
