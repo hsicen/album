@@ -228,4 +228,13 @@ class AlbumView extends Contract.AlbumView implements View.OnClickListener {
             getPresenter().tryPreviewChecked();
         }
     }
+
+    @Override
+    public void setSubTitle(String title) {
+        if (mMode == Album.FUNCTION_CHOICE_VIDEO) {
+            return;
+        }
+
+        super.setSubTitle(title);
+    }
 }

@@ -213,7 +213,7 @@ public abstract class BaseView<Presenter extends BasePresenter> {
         mSource.setTitle(title);
     }
 
-    public final void setSubTitle(String title) {
+    public void setSubTitle(String title) {
         mSource.setSubTitle(title);
     }
 
