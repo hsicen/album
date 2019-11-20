@@ -344,7 +344,7 @@ public class AlbumActivity extends BaseActivity implements
                 MediaMetadataRetriever media = new MediaMetadataRetriever();
                 media.setDataSource(result);
                 long duration = Long.parseLong(media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
-                long seconds = duration / 1000;
+                long seconds = AlbumUtils.getSpecificTime(duration);
                 if (seconds > 3 && seconds <= 30) {
                     AlbumFile albumFile = new AlbumFile();
                     albumFile.setPath(result);
@@ -388,7 +388,7 @@ public class AlbumActivity extends BaseActivity implements
         Log.d("hsc", "转化处理回调：" + System.currentTimeMillis());
         if (mChoiceMode == Album.MODE_SINGLE) {
             if (mFunction == Album.FUNCTION_CAMERA_VIDEO) {
-                long duration = albumFile.getDuration() / 1000;
+                long duration = AlbumUtils.getSpecificTime(albumFile.getDuration());
                 if (duration <= 3) {
                     Toast.makeText(this, "请选择3s以上的视频", Toast.LENGTH_SHORT).show();
                     takeBack = true;
@@ -513,7 +513,7 @@ public class AlbumActivity extends BaseActivity implements
             case Album.MODE_SINGLE: {
                 if (mFunction == Album.FUNCTION_CAMERA_VIDEO) {
                     AlbumFile albumFile = mAlbumFolders.get(mCurrentFolder).getAlbumFiles().get(position);
-                    long duration = albumFile.getDuration() / 1000;
+                    long duration = AlbumUtils.getSpecificTime(albumFile.getDuration());
 
                     if (duration <= 3) {
                         Toast.makeText(this, "请选择3s以上的视频", Toast.LENGTH_SHORT).show();

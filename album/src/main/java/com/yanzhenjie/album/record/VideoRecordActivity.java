@@ -10,7 +10,9 @@ import android.graphics.ImageFormat;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -18,10 +20,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yanzhenjie.album.R;
 import com.yanzhenjie.album.app.album.VideoPlayActivity;
+import com.yanzhenjie.album.util.AlbumUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -35,19 +40,31 @@ import cameraview.CameraOptions;
 import cameraview.CameraView;
 import cameraview.PictureResult;
 import cameraview.VideoResult;
+import cameraview.controls.Flash;
 import cameraview.controls.Mode;
 import cameraview.controls.Preview;
 import cameraview.frame.Frame;
 import cameraview.frame.FrameProcessor;
+import cameraview.markers.DefaultAutoFocusMarker;
 
 public class VideoRecordActivity extends AppCompatActivity implements View.OnClickListener, OptionView.Callback {
-
     private final static CameraLogger LOG = CameraLogger.create("DemoApp");
     private final static boolean USE_FRAME_PROCESSOR = false;
     private final static boolean DECODE_BITMAP = true;
 
     private CameraView camera;
     private ViewGroup controlPanel;
+    private long mCaptureTime;
+    private boolean isFlash = false;
+
+    private ImageButton mFlashButton;
+    private ImageButton mCloseButton;
+    private ImageButton mSwitchButton;
+    private TextView mTvRecordHint;
+    private CountDownButton mBtnRecord;
+
+    //视频暂停录制   1录制正常停止    2录制异常停止
+    private int stopMode = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +73,24 @@ public class VideoRecordActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_video_record);
         CameraLogger.setLogLevel(CameraLogger.LEVEL_VERBOSE);
 
-        camera = findViewById(R.id.mCamera);
+        camera = findViewById(R.id.camera);
         camera.setLifecycleOwner(getLifecycle());
         camera.addCameraListener(new Listener());
+        mFlashButton = findViewById(R.id.ib_light);
+        mCloseButton = findViewById(R.id.ib_record_close);
+        mSwitchButton = findViewById(R.id.toggleCamera);
+        mTvRecordHint = findViewById(R.id.tv_record_hint);
+        mBtnRecord = findViewById(R.id.captureVideo);
+
+        //init listener
+        mBtnRecord.setOnCountDownListener(new CountDownButton.OnCountDownListener() {
+            @Override
+            public void onTimeEnd() {
+                //录制动画结束
+                LOG.w("录制按钮结束录制");
+            }
+        });
+
 
         if (USE_FRAME_PROCESSOR) {
             camera.addFrameProcessor(new FrameProcessor() {
@@ -88,9 +120,11 @@ public class VideoRecordActivity extends AppCompatActivity implements View.OnCli
             });
         }
 
-        findViewById(R.id.edit).setOnClickListener(this);
-        findViewById(R.id.captureVideo).setOnClickListener(this);
-        findViewById(R.id.toggleCamera).setOnClickListener(this);
+        //findViewById(R.id.edit).setOnClickListener(this);   //参数设置
+        findViewById(R.id.captureVideo).setOnClickListener(this);  // 点击拍照监听
+        findViewById(R.id.toggleCamera).setOnClickListener(this); // 相机切换监听
+        findViewById(R.id.ib_light).setOnClickListener(this);  //闪光灯切换监听
+        findViewById(R.id.ib_record_close).setOnClickListener(this); //点击返回监听
 
         controlPanel = findViewById(R.id.controls);
         ViewGroup group = (ViewGroup) controlPanel.getChildAt(0);
@@ -149,15 +183,14 @@ public class VideoRecordActivity extends AppCompatActivity implements View.OnCli
     private void message(@NonNull String content, boolean important) {
         if (important) {
             LOG.w(content);
-            Toast.makeText(this, content, Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, content, Toast.LENGTH_LONG).show();
         } else {
             LOG.i(content);
-            Toast.makeText(this, content, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, content, Toast.LENGTH_SHORT).show();
         }
     }
 
     private class Listener extends CameraListener {
-
         @Override
         public void onCameraOpened(@NonNull CameraOptions options) {
             ViewGroup group = (ViewGroup) controlPanel.getChildAt(0);
@@ -165,6 +198,9 @@ public class VideoRecordActivity extends AppCompatActivity implements View.OnCli
                 OptionView view = (OptionView) group.getChildAt(i);
                 view.onCameraOpened(camera, options);
             }
+
+            toggleFlash(true);
+            camera.setAutoFocusMarker(new DefaultAutoFocusMarker());
         }
 
         @Override
@@ -176,7 +212,7 @@ public class VideoRecordActivity extends AppCompatActivity implements View.OnCli
         @Override
         public void onPictureTaken(@NonNull PictureResult result) {
             super.onPictureTaken(result);
-           /* if (camera.isTakingVideo()) {
+            /*if (camera.isTakingVideo()) {
                 message("Captured while taking video. Size=" + result.getSize(), false);
                 return;
             }
@@ -196,19 +232,32 @@ public class VideoRecordActivity extends AppCompatActivity implements View.OnCli
         @Override
         public void onVideoTaken(@NonNull VideoResult result) {
             super.onVideoTaken(result);
+            if (2 == stopMode) return;
 
+            //判断时长
+            MediaMetadataRetriever media = new MediaMetadataRetriever();
+            media.setDataSource(result.getFile().getAbsolutePath());
+            long duration = Long.parseLong(media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+            duration = AlbumUtils.getSpecificTime(duration);
+            AlbumUtils.updateFileFromDatabase(VideoRecordActivity.this, result.getFile());
+
+            //拍照完成
             VideoPlayActivity.start(VideoRecordActivity.this, result.getFile().getAbsolutePath());
         }
 
         @Override
         public void onVideoRecordingStart() {
             super.onVideoRecordingStart();
+            mBtnRecord.startCountDown();
+            stopMode = 1;
+            dealIconStatus(false);
             LOG.w("onVideoRecordingStart!");
         }
 
         @Override
         public void onVideoRecordingEnd() {
             super.onVideoRecordingEnd();
+            mBtnRecord.stopCountDown();
             message("Video taken. Processing...", false);
             LOG.w("onVideoRecordingEnd!");
         }
@@ -235,6 +284,12 @@ public class VideoRecordActivity extends AppCompatActivity implements View.OnCli
             captureVideo();
         } else if (id == R.id.toggleCamera) {
             toggleCamera();
+        } else if (id == R.id.ib_record_close) {
+            stopMode = 2;
+            camera.stopVideo();
+            onBackPressed();
+        } else if (id == R.id.ib_light) {
+            toggleFlash(false);
         }
     }
 
@@ -253,14 +308,20 @@ public class VideoRecordActivity extends AppCompatActivity implements View.OnCli
         b.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
+    /*** 点击录制视频*/
     private void captureVideo() {
         if (camera.getMode() == Mode.PICTURE) {
             message("Can't record HQ videos while in PICTURE mode.", false);
             return;
         }
-        if (camera.isTakingPicture() || camera.isTakingVideo()) return;
-        message("Recording for 5 seconds...", true);
-        camera.takeVideo(new File(getFilesDir(), "video.mp4"), 5000);
+
+        if (camera.isTakingPicture() || camera.isTakingVideo()) {
+            camera.stopVideo();
+            return;
+        }
+
+        camera.takeVideo(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES),
+                "video" + System.currentTimeMillis() + ".mp4"), 30000);
     }
 
     private void toggleCamera() {
@@ -273,6 +334,21 @@ public class VideoRecordActivity extends AppCompatActivity implements View.OnCli
             case FRONT:
                 message("Switched to front camera!", false);
                 break;
+        }
+    }
+
+    /*** 切换闪光灯状态*/
+    private void toggleFlash(boolean isInit) {
+        if (isInit) isFlash = true;
+
+        if (isFlash) {
+            isFlash = false;
+            mFlashButton.setImageResource(R.drawable.ic_light_off);
+            camera.setFlash(Flash.OFF);
+        } else {
+            isFlash = true;
+            mFlashButton.setImageResource(R.drawable.ic_light_on);
+            camera.setFlash(Flash.TORCH);
         }
     }
 
@@ -321,4 +397,37 @@ public class VideoRecordActivity extends AppCompatActivity implements View.OnCli
         getWindow().setNavigationBarColor(Color.TRANSPARENT);
     }
 
+    /*** 处理Icon状态*/
+    private void dealIconStatus(boolean isShow) {
+        if (isShow) {
+            mFlashButton.setVisibility(View.VISIBLE);
+            mCloseButton.setVisibility(View.VISIBLE);
+            mSwitchButton.setVisibility(View.VISIBLE);
+            mTvRecordHint.setVisibility(View.VISIBLE);
+        } else {
+            mFlashButton.setVisibility(View.GONE);
+            mCloseButton.setVisibility(View.GONE);
+            mSwitchButton.setVisibility(View.GONE);
+            mTvRecordHint.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (2 == stopMode) {
+            Toast.makeText(this, "视频录制失败", Toast.LENGTH_SHORT).show();
+        }
+
+        dealIconStatus(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        stopMode = 2;
+        camera.stopVideo();
+    }
 }

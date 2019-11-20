@@ -23,6 +23,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -36,6 +37,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
@@ -356,12 +358,7 @@ public class AlbumUtils {
         return stringSpan;
     }
 
-    /**
-     * Return a color-int from alpha, red, green, blue components.
-     *
-     * @param color color.
-     * @param alpha alpha, alpha component [0..255] of the color.
-     */
+    /*** Return a color-int from alpha, red, green, blue components.*/
     @ColorInt
     public static int getAlphaColor(@ColorInt int color, @IntRange(from = 0, to = 255) int alpha) {
         int red = Color.red(color);
@@ -370,12 +367,7 @@ public class AlbumUtils {
         return Color.argb(alpha, red, green, blue);
     }
 
-    /**
-     * Generate divider.
-     *
-     * @param color color.
-     * @return {@link Divider}.
-     */
+    /*** Generate divider.*/
     public static Divider getDivider(@ColorInt int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return new Api21ItemDivider(color);
@@ -383,15 +375,10 @@ public class AlbumUtils {
         return new Api20ItemDivider(color);
     }
 
-    /**
-     * Time conversion.
-     *
-     * @param duration ms.
-     * @return such as: {@code 00:00:00}, {@code 00:00}.
-     */
+    /*** Time conversion*/
     @NonNull
     public static String convertDuration(@IntRange(from = 1) long duration) {
-        duration /= 1000;
+        duration = getSpecificTime(duration);
         int hour = (int) (duration / 3600);
         int minute = (int) ((duration - hour * 3600) / 60);
         int second = (int) (duration - hour * 3600 - minute * 60);
@@ -429,12 +416,16 @@ public class AlbumUtils {
         return hourValue + minuteValue + secondValue;
     }
 
-    /**
-     * Get the MD5 value of string.
-     *
-     * @param content the target string.
-     * @return the MD5 value.
-     */
+    /***毫秒四舍五入到秒*/
+    public static long getSpecificTime(long duration) {
+        Log.d("hsc", "原始数据：" + duration + "毫秒");
+        int roundInt = Math.round(duration / 1000f);
+        Log.d("hsc", "处理数据：" + roundInt + "秒");
+
+        return roundInt;
+    }
+
+    /*** Get the MD5 value of string.*/
     public static String getMD5ForString(String content) {
         StringBuilder md5Buffer = new StringBuilder();
         try {
@@ -491,5 +482,18 @@ public class AlbumUtils {
             result = resources.getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    /*** 更新媒体库*/
+    public static void updateFileFromDatabase(Context context, File file) {
+        String[] paths = new String[]{Environment.getExternalStorageDirectory().toString()};
+        MediaScannerConnection.scanFile(context, paths, null, null);
+        MediaScannerConnection.scanFile(context, new String[]{
+                        file.getAbsolutePath()},
+                null, new MediaScannerConnection.OnScanCompletedListener() {
+                    public void onScanCompleted(String path, Uri uri) {
+                        Log.d("hsc", "媒体库更新完成");
+                    }
+                });
     }
 }

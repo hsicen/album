@@ -163,4 +163,28 @@
         <attr name="layout_drawOnVideoSnapshot" format="boolean" />
     </declare-styleable>
 
+    <attr name="countDownButtonStyle" format="reference" />
+    <declare-styleable name="CountDownButton">
+        <!-- 外圈背景-->
+        <attr name="backgroundColor" format="color|reference" />
+        <!-- 内圈渐变起始颜色 -->
+        <attr name="gradientStartColor" format="color|reference" />
+        <!-- 内圈渐变终止颜色 -->
+        <attr name="gradientEndColor" format="color|reference" />
+        <!--外圈宽度-->
+        <attr name="border" format="dimension|reference" />
+        <!-- 倒计时-->
+        <attr name="countDownSeconds" format="integer" />
+        <!--最小时间-->
+        <attr name="minCountDownSeconds" format="integer" />
+        <!---外圈进度底色-->
+        <attr name="strokeColor" format="color|reference" />
+        <!-- 外圈进度颜色-->
+        <attr name="progressColor" format="color|reference" />
+        <!-- 最小时间颜色 -->
+        <attr name="progressHeadColor" format="color|reference" />
+        <!-- 中间停止icon尺寸-->
+        <attr name="stopIconSize" format="dimension|reference" />
+    </declare-styleable>
+
 </resources>

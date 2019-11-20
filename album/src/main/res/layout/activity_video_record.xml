@@ -2,92 +2,19 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FF444444">
+    android:background="#FF444444"
+    tools:ignore="HardcodedText">
 
-    <cameraview.CameraView
-        android:id="@+id/mCamera"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:keepScreenOn="true"
-        app:cameraAudio="on"
-        app:cameraAutoFocusMarker="@string/cameraview_default_autofocus_marker"
-        app:cameraEngine="camera1"
-        app:cameraExperimental="true"
-        app:cameraFacing="back"
-        app:cameraFlash="auto"
-        app:cameraGestureLongTap="none"
-        app:cameraGesturePinch="none"
-        app:cameraGestureScrollHorizontal="none"
-        app:cameraGestureScrollVertical="none"
-        app:cameraGestureTap="autoFocus"
-        app:cameraGrid="off"
-        app:cameraHdr="on"
-        app:cameraMode="video"
-        app:cameraPlaySounds="true"
-        app:cameraPreview="glSurface"
-        app:cameraPreviewFrameRate="30"
-        app:cameraVideoCodec="h264">
-
-    </cameraview.CameraView>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_marginBottom="96dp"
-        android:orientation="vertical">
-
-        <ImageButton
-            android:id="@+id/toggleCamera"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_margin="16dp"
-            android:background="#00000000"
-            android:elevation="3dp"
-            app:srcCompat="@drawable/ic_switch" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="#00000000"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:weightSum="2">
-
-        <ImageButton
-            android:id="@+id/edit"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:srcCompat="@drawable/ic_edit" />
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
-
-        <ImageButton
-            android:id="@+id/captureVideo"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:srcCompat="@drawable/ic_video" />
-
-    </LinearLayout>
-
-    <!-- Edit -->
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/controls"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0.5dp"
+        android:layout_height="0.5dp"
         android:background="@android:color/white"
-        android:elevation="4dp"
+        android:visibility="invisible"
         app:behavior_hideable="true"
         app:behavior_peekHeight="300dp"
         app:behavior_skipCollapsed="false"
@@ -98,5 +25,103 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" />
     </android.support.v4.widget.NestedScrollView>
+
+    <ImageButton
+        android:id="@+id/edit"
+        android:layout_width="0.5dp"
+        android:layout_height="0.5dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_edit" />
+
+    <!-- 相机预览-->
+    <cameraview.CameraView
+        android:id="@+id/camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:keepScreenOn="true"
+        app:cameraAudio="on"
+        app:cameraAutoFocusMarker="@string/cameraview_default_autofocus_marker"
+        app:cameraEngine="camera1"
+        app:cameraExperimental="false"
+        app:cameraFacing="back"
+        app:cameraFlash="on"
+        app:cameraGestureLongTap="none"
+        app:cameraGesturePinch="none"
+        app:cameraGestureScrollHorizontal="none"
+        app:cameraGestureScrollVertical="none"
+        app:cameraGestureTap="autoFocus"
+        app:cameraGrid="off"
+        app:cameraHdr="on"
+        app:cameraMode="video"
+        app:cameraPlaySounds="false"
+        app:cameraPreview="glSurface"
+        app:cameraPreviewFrameRate="30"
+        app:cameraVideoCodec="h264">
+
+    </cameraview.CameraView>
+
+    <!-- 返回-->
+    <ImageButton
+        android:id="@+id/ib_record_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:background="#00000000"
+        android:contentDescription="关闭"
+        android:padding="16dp"
+        app:srcCompat="@drawable/ic_video_close"
+        tools:visibility="visible" />
+
+    <!-- 切换摄像头-->
+    <ImageButton
+        android:id="@+id/toggleCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="11dp"
+        android:background="#00000000"
+        android:contentDescription="切换"
+        android:padding="16dp"
+        app:srcCompat="@drawable/ic_camera_switch" />
+
+    <!-- 闪光灯控制-->
+    <ImageButton
+        android:id="@+id/ib_light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="62dp"
+        android:background="#00000000"
+        android:contentDescription="切换"
+        android:padding="16dp"
+        app:srcCompat="@drawable/ic_light_off" />
+
+    <TextView
+        android:id="@+id/tv_record_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="112dp"
+        android:clickable="false"
+        android:enabled="false"
+        android:gravity="center"
+        android:text="点击录制\n至少需拍摄3秒以上哦"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp" />
+
+    <!-- 视频录制-->
+    <com.yanzhenjie.album.record.CountDownButton
+        android:id="@+id/captureVideo"
+        android:layout_width="74dp"
+        android:layout_height="74dp"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="24dp"
+        app:border="6dp"
+        app:countDownSeconds="30"
+        app:minCountDownSeconds="3"
+        app:stopIconSize="20dp" />
 
 </android.support.design.widget.CoordinatorLayout>
