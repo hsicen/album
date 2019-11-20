@@ -51,7 +51,7 @@
         app:cameraGesturePinch="none"
         app:cameraGestureScrollHorizontal="none"
         app:cameraGestureScrollVertical="none"
-        app:cameraGestureTap="autoFocus"
+        app:cameraGestureTap="none"
         app:cameraGrid="off"
         app:cameraHdr="on"
         app:cameraMode="video"
