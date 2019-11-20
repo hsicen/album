@@ -492,7 +492,7 @@ public class AlbumUtils {
         MediaScannerConnection.scanFile(context, paths, null, null);
         MediaScannerConnection.scanFile(context, new String[]{
                         file.getAbsolutePath()},
-                null, new MediaScannerConnection.OnScanCompletedListener() {
+                new String[]{"video/mp4", "video/avi"}, new MediaScannerConnection.OnScanCompletedListener() {
                     public void onScanCompleted(String path, Uri uri) {
                         Log.d("hsc", "媒体库更新完成");
                     }

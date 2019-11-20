@@ -171,8 +171,8 @@ public class VideoPlayActivity extends BaseActivity {
         mTvFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sCallback.onVideoBack();
                 AlbumUtils.updateFileFromDatabase(new File(mSelectFile.getPath()));
+                sCallback.onVideoBack();
                 finish();
             }
         });
