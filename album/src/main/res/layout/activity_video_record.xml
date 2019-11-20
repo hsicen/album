@@ -58,6 +58,7 @@
         app:cameraPlaySounds="false"
         app:cameraPreview="glSurface"
         app:cameraPreviewFrameRate="30"
+        app:cameraUseDeviceOrientation="true"
         app:cameraVideoCodec="h264">
 
     </cameraview.CameraView>
