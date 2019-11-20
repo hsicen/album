@@ -1,6 +1,7 @@
 package com.yanzhenjie.album.record;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -10,9 +11,9 @@ import android.graphics.ImageFormat;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
+import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
@@ -57,10 +58,10 @@ public class VideoRecordActivity extends AppCompatActivity implements
     private final static CameraLogger LOG = CameraLogger.create("DemoApp");
     private final static boolean USE_FRAME_PROCESSOR = false;
     private final static boolean DECODE_BITMAP = true;
+    private final static int RECORD_TIME = 30000;
 
     private CameraView camera;
     private ViewGroup controlPanel;
-    private long mCaptureTime;
     private boolean isFlash = false;
 
     private ImageButton mFlashButton;
@@ -299,7 +300,7 @@ public class VideoRecordActivity extends AppCompatActivity implements
         if (id == R.id.edit) {
             edit();
         } else if (id == R.id.captureVideo) {
-            camera.setPlaySounds(false);
+            turnOffAudio(true);
             captureVideo();
         } else if (id == R.id.toggleCamera) {
             toggleCamera();
@@ -339,8 +340,7 @@ public class VideoRecordActivity extends AppCompatActivity implements
             return;
         }
 
-        camera.takeVideo(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES),
-                "video" + System.currentTimeMillis() + ".mp4"), 30000);
+        camera.takeVideo(new File(AlbumUtils.randomMP4Path(this)), RECORD_TIME);
     }
 
     private void toggleCamera() {
@@ -454,6 +454,10 @@ public class VideoRecordActivity extends AppCompatActivity implements
             camera.stopVideo();
             Toast.makeText(this, "视频录制失败", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void turnOffAudio(boolean isTurnOff) {
+        ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).setSpeakerphoneOn(false);
     }
 
     @Override

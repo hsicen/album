@@ -52,7 +52,6 @@ import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.UUID;
 
 /**
  * <p>Helper for album.</p>
@@ -256,7 +255,7 @@ public class AlbumUtils {
     private static String randomMediaPath(File bucket, String extension) {
         if (bucket.exists() && bucket.isFile()) bucket.delete();
         if (!bucket.exists()) bucket.mkdirs();
-        String outFilePath = AlbumUtils.getNowDateTime("yyyyMMdd_HHmmssSSS") + "_" + getMD5ForString(UUID.randomUUID().toString()) + extension;
+        String outFilePath = "video" + System.currentTimeMillis() + extension;
         File file = new File(bucket, outFilePath);
         return file.getAbsolutePath();
     }
@@ -488,8 +487,9 @@ public class AlbumUtils {
     public static void updateFileFromDatabase(File file) {
         Context context = CameraFileProvider.mContext;
 
-        String[] paths = new String[]{Environment.getExternalStorageDirectory().toString()};
-        MediaScannerConnection.scanFile(context, paths, null, null);
+        //String[] paths = new String[]{Environment.getExternalStorageDirectory().toString()};
+        //MediaScannerConnection.scanFile(context, paths, null, null);
+
         MediaScannerConnection.scanFile(context, new String[]{
                         file.getAbsolutePath()},
                 new String[]{"video/mp4", "video/avi"}, new MediaScannerConnection.OnScanCompletedListener() {
