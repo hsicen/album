@@ -17,6 +17,9 @@ import android.widget.VideoView;
 import com.yanzhenjie.album.AlbumFile;
 import com.yanzhenjie.album.R;
 import com.yanzhenjie.album.mvp.BaseActivity;
+import com.yanzhenjie.album.util.AlbumUtils;
+
+import java.io.File;
 
 /**
  * <p>作者：hsicen  2019/11/8 9:55
@@ -36,6 +39,8 @@ public class VideoPlayActivity extends BaseActivity {
     private RelativeLayout mLayoutBottom;
     private int videoWidth;
     private int videoHeight;
+
+    private boolean isRecord = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,11 @@ public class VideoPlayActivity extends BaseActivity {
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isRecord) {
+                    File file = new File(mSelectFile.getPath());
+                    if (file.exists()) file.delete();
+                }
+
                 onBackPressed();
             }
         });
@@ -162,6 +172,7 @@ public class VideoPlayActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 sCallback.onVideoBack();
+                AlbumUtils.updateFileFromDatabase(new File(mSelectFile.getPath()));
                 finish();
             }
         });
@@ -169,10 +180,12 @@ public class VideoPlayActivity extends BaseActivity {
 
     /*** 跳转视频播放界面
      * @param activity activity
+     * @param  fromRecord 是否为录制视频跳转
      * @param path 视频路径 */
-    public static void start(Activity activity, String path) {
+    public static void start(Activity activity, String path, boolean fromRecord) {
         Intent intent = new Intent(activity, VideoPlayActivity.class);
         intent.putExtra("videoPath", path);
+        intent.putExtra("isRecord", fromRecord);
         activity.startActivity(intent);
         activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }

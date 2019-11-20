@@ -23,6 +23,7 @@ import android.support.v4.content.FileProvider;
  * Created by Yan Zhenjie on 2017/3/31.
  */
 public class CameraFileProvider extends FileProvider {
+    public static Context mContext;
 
     /**
      * Get the provider of the external file path.
@@ -34,4 +35,10 @@ public class CameraFileProvider extends FileProvider {
         return context.getPackageName() + ".app.file.provider";
     }
 
+    @Override
+    public boolean onCreate() {
+        mContext = getContext();
+
+        return super.onCreate();
+    }
 }

@@ -485,7 +485,9 @@ public class AlbumUtils {
     }
 
     /*** 更新媒体库*/
-    public static void updateFileFromDatabase(Context context, File file) {
+    public static void updateFileFromDatabase(File file) {
+        Context context = CameraFileProvider.mContext;
+
         String[] paths = new String[]{Environment.getExternalStorageDirectory().toString()};
         MediaScannerConnection.scanFile(context, paths, null, null);
         MediaScannerConnection.scanFile(context, new String[]{

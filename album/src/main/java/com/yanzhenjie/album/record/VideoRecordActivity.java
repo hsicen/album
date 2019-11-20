@@ -24,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yanzhenjie.album.AlbumFile;
 import com.yanzhenjie.album.R;
 import com.yanzhenjie.album.app.album.VideoPlayActivity;
 import com.yanzhenjie.album.util.AlbumUtils;
@@ -47,7 +48,12 @@ import cameraview.frame.Frame;
 import cameraview.frame.FrameProcessor;
 import cameraview.markers.DefaultAutoFocusMarker;
 
-public class VideoRecordActivity extends AppCompatActivity implements View.OnClickListener, OptionView.Callback {
+public class VideoRecordActivity extends AppCompatActivity implements
+        View.OnClickListener,
+        VideoPlayActivity.VideoCallback,
+        OptionView.Callback {
+
+    public static RecordCallback sCallback;
     private final static CameraLogger LOG = CameraLogger.create("DemoApp");
     private final static boolean USE_FRAME_PROCESSOR = false;
     private final static boolean DECODE_BITMAP = true;
@@ -235,14 +241,26 @@ public class VideoRecordActivity extends AppCompatActivity implements View.OnCli
             if (2 == stopMode) return;
 
             //判断时长
+            AlbumFile albumFile = new AlbumFile();
             MediaMetadataRetriever media = new MediaMetadataRetriever();
             media.setDataSource(result.getFile().getAbsolutePath());
             long duration = Long.parseLong(media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+            albumFile.setDuration(duration);
             duration = AlbumUtils.getSpecificTime(duration);
-            AlbumUtils.updateFileFromDatabase(VideoRecordActivity.this, result.getFile());
+            if (duration <= 3) {
+                Toast.makeText(VideoRecordActivity.this, "视频需录制3s以上", Toast.LENGTH_SHORT).show();
+                dealIconStatus(true);
+                if (result.getFile().exists()) result.getFile().delete();
+                return;
+            }
 
             //拍照完成
-            VideoPlayActivity.start(VideoRecordActivity.this, result.getFile().getAbsolutePath());
+            albumFile.setPath(result.getFile().getAbsolutePath());
+            albumFile.setMediaType(AlbumFile.TYPE_VIDEO);
+
+            VideoPlayActivity.sCallback = VideoRecordActivity.this;
+            VideoPlayActivity.mSelectFile = albumFile;
+            VideoPlayActivity.start(VideoRecordActivity.this, result.getFile().getAbsolutePath(), true);
         }
 
         @Override
@@ -385,6 +403,13 @@ public class VideoRecordActivity extends AppCompatActivity implements View.OnCli
     public static void start(Activity mAct) {
         Intent intent = new Intent(mAct, VideoRecordActivity.class);
         mAct.startActivity(intent);
+        mAct.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void hideStatusNavigationBar() {
@@ -416,10 +441,6 @@ public class VideoRecordActivity extends AppCompatActivity implements View.OnCli
     protected void onResume() {
         super.onResume();
 
-        if (2 == stopMode) {
-            Toast.makeText(this, "视频录制失败", Toast.LENGTH_SHORT).show();
-        }
-
         dealIconStatus(true);
     }
 
@@ -427,7 +448,21 @@ public class VideoRecordActivity extends AppCompatActivity implements View.OnCli
     protected void onPause() {
         super.onPause();
 
-        stopMode = 2;
-        camera.stopVideo();
+        if (camera.isTakingVideo() || camera.isTakingPicture()) {
+            camera.stopVideo();
+            Toast.makeText(this, "视频录制失败", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onVideoBack() {
+        finish();
+        sCallback.onRecordBack();
+    }
+
+    public interface RecordCallback {
+
+        /*** 预览完成回调*/
+        void onRecordBack();
     }
 }

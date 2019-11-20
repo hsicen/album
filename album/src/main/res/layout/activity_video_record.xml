@@ -121,7 +121,7 @@
         android:layout_marginBottom="24dp"
         app:border="6dp"
         app:countDownSeconds="30"
-        app:minCountDownSeconds="3"
+        app:minCountDownSeconds="4"
         app:stopIconSize="20dp" />
 
 </android.support.design.widget.CoordinatorLayout>

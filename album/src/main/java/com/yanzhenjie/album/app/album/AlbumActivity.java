@@ -50,6 +50,7 @@ public class AlbumActivity extends BaseActivity implements
         MediaReadTask.Callback,
         GalleryActivity.Callback,
         VideoPlayActivity.VideoCallback,
+        VideoRecordActivity.RecordCallback,
         PathConvertTask.Callback,
         ThumbnailBuildTask.Callback {
 
@@ -331,7 +332,7 @@ public class AlbumActivity extends BaseActivity implements
                 .limitBytes(mLimitBytes)
                 .onResult(mCameraAction) //拍摄回调处理
                 .start();*/
-        //todo 自定义视频拍摄
+        VideoRecordActivity.sCallback = this;
         VideoRecordActivity.start(this);
     }
 
@@ -532,7 +533,7 @@ public class AlbumActivity extends BaseActivity implements
 
                     VideoPlayActivity.sCallback = this;
                     VideoPlayActivity.mSelectFile = albumFile;
-                    VideoPlayActivity.start(this, albumFile.getPath());
+                    VideoPlayActivity.start(this, albumFile.getPath(), false);
                 } else {
                     AlbumFile albumFile = mAlbumFolders.get(mCurrentFolder).getAlbumFiles().get(position);
                     mCheckedList.add(albumFile);
@@ -683,5 +684,12 @@ public class AlbumActivity extends BaseActivity implements
         sResult = null;
         sCancel = null;
         super.finish();
+    }
+
+    @Override
+    public void onRecordBack() {
+        ArrayList<AlbumFile> tempList = new ArrayList<>();
+        tempList.add(VideoPlayActivity.mSelectFile);
+        onThumbnailCallback(tempList);
     }
 }
