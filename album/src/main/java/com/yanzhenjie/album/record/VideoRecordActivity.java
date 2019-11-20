@@ -452,6 +452,7 @@ public class VideoRecordActivity extends AppCompatActivity implements
         if (camera.isTakingVideo() || camera.isTakingPicture()) {
             stopMode = 2;
             camera.stopVideo();
+            mBtnRecord.stopCountDown();
             Toast.makeText(this, "视频录制失败", Toast.LENGTH_SHORT).show();
         }
     }
