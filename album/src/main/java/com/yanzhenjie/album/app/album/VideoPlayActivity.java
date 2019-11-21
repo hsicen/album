@@ -68,7 +68,6 @@ public class VideoPlayActivity extends BaseActivity {
         initVariable();
         initVideo();
         initListener();
-        getThumbPath();
     }
 
     private void initToolBar() {
@@ -169,6 +168,12 @@ public class VideoPlayActivity extends BaseActivity {
 
         hideStatusNavigationBar();
         mVideoView.resume();
+        mTvFinish.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getThumbPath();
+            }
+        }, 1500);
     }
 
     @Override
