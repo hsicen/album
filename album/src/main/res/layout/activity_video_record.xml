@@ -42,6 +42,7 @@
         android:layout_gravity="center"
         android:keepScreenOn="true"
         app:cameraAudio="on"
+        app:cameraAudioBitRate="1048576"
         app:cameraAutoFocusMarker="@string/cameraview_default_autofocus_marker"
         app:cameraEngine="camera1"
         app:cameraExperimental="false"
@@ -59,7 +60,9 @@
         app:cameraPreview="glSurface"
         app:cameraPreviewFrameRate="30"
         app:cameraUseDeviceOrientation="true"
-        app:cameraVideoCodec="h264">
+        app:cameraVideoBitRate="2097152"
+        app:cameraVideoCodec="h264"
+        app:cameraVideoSizeMaxWidth="640">
 
     </cameraview.CameraView>
 
