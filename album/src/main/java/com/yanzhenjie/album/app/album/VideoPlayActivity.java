@@ -201,6 +201,12 @@ public class VideoPlayActivity extends BaseActivity {
         getWindow().setNavigationBarColor(Color.TRANSPARENT);
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
     public interface VideoCallback {
 
         /*** 预览完成回调*/
