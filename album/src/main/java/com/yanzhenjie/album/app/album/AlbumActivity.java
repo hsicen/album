@@ -188,9 +188,10 @@ public class AlbumActivity extends BaseActivity implements
         mCheckedList = checkedFiles;
 
         if (mAlbumFolders.get(0).getAlbumFiles().isEmpty()) {
-            Intent intent = new Intent(this, NullActivity.class);
+            Log.d("hsc", "没有媒体数据");
+           /* Intent intent = new Intent(this, NullActivity.class);
             intent.putExtras(getIntent());
-            startActivityForResult(intent, CODE_ACTIVITY_NULL);
+            startActivityForResult(intent, CODE_ACTIVITY_NULL);*/
         } else {
             showFolderAlbumFiles(0);
             int count = mCheckedList.size();

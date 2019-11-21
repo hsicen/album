@@ -9,8 +9,8 @@
     <string name="album_not_found_video">没有发现视频文件</string>
     <string name="album_not_found_album">没有发现媒体文件</string>
 
-    <string name="album_camera_image_capture">拍照片</string>
-    <string name="album_camera_video_capture">录视频</string>
+    <string name="album_camera_image_capture">拍摄照片</string>
+    <string name="album_camera_video_capture">录制视频</string>
 
     <string name="album_title">媒体专辑</string>
     <string name="album_all_images">所有图片</string>
