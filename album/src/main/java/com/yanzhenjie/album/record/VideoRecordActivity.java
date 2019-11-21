@@ -11,14 +11,11 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.media.MediaMetadataRetriever;
-import android.media.ThumbnailUtils;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -43,6 +40,7 @@ import cameraview.CameraOptions;
 import cameraview.CameraView;
 import cameraview.PictureResult;
 import cameraview.VideoResult;
+import cameraview.controls.Facing;
 import cameraview.controls.Flash;
 import cameraview.controls.Mode;
 import cameraview.controls.Preview;
@@ -347,10 +345,12 @@ public class VideoRecordActivity extends AppCompatActivity implements
         if (camera.isTakingPicture() || camera.isTakingVideo()) return;
         switch (camera.toggleFacing()) {
             case BACK:
+                mFlashButton.setVisibility(View.VISIBLE);
                 message("Switched to back camera!", false);
                 break;
 
             case FRONT:
+                mFlashButton.setVisibility(View.GONE);
                 message("Switched to front camera!", false);
                 break;
         }
@@ -426,7 +426,12 @@ public class VideoRecordActivity extends AppCompatActivity implements
     /*** 处理Icon状态*/
     private void dealIconStatus(boolean isShow) {
         if (isShow) {
-            mFlashButton.setVisibility(View.VISIBLE);
+            if (Facing.FRONT == camera.getFacing()) {
+                mFlashButton.setVisibility(View.GONE);
+            } else {
+                mFlashButton.setVisibility(View.VISIBLE);
+            }
+
             mCloseButton.setVisibility(View.VISIBLE);
             mSwitchButton.setVisibility(View.VISIBLE);
             mTvRecordHint.setVisibility(View.VISIBLE);
@@ -448,6 +453,7 @@ public class VideoRecordActivity extends AppCompatActivity implements
     @Override
     protected void onPause() {
         super.onPause();
+        toggleFlash(true);
 
         if (camera.isTakingVideo() || camera.isTakingPicture()) {
             stopMode = 2;
