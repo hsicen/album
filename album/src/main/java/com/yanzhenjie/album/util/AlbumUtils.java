@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
@@ -48,6 +49,9 @@ import com.yanzhenjie.album.widget.divider.Api21ItemDivider;
 import com.yanzhenjie.album.widget.divider.Divider;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -497,5 +501,36 @@ public class AlbumUtils {
                         Log.d("hsc", "媒体库更新完成");
                     }
                 });
+    }
+
+    /*** 保存Bitmap到文件*/
+    public static String saveBitmap(Bitmap bitmap, File bitmapFile) {
+        if (null == bitmap) return "";
+
+        if (bitmapFile.exists()) bitmapFile.delete();
+        else {
+            File folder = new File(bitmapFile.getParent());
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            try {
+                bitmapFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.d("hsc", "创建文件失败");
+                return "";
+            }
+        }
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(bitmapFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return "";
+        }
+
+        return bitmapFile.getAbsolutePath();
     }
 }

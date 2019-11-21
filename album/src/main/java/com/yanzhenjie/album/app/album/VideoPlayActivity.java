@@ -2,10 +2,14 @@ package com.yanzhenjie.album.app.album;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -64,6 +68,7 @@ public class VideoPlayActivity extends BaseActivity {
         initVariable();
         initVideo();
         initListener();
+        getThumbPath();
     }
 
     private void initToolBar() {
@@ -80,6 +85,20 @@ public class VideoPlayActivity extends BaseActivity {
                 onBackPressed();
             }
         });
+    }
+
+    private void getThumbPath() {
+        if (!TextUtils.isEmpty(mSelectFile.getThumbPath())) return;
+
+        Log.d("hsc", "开始获取封面图片：" + System.currentTimeMillis());
+        Bitmap videoThumbnail = ThumbnailUtils.createVideoThumbnail(mSelectFile.getPath(),
+                MediaStore.Images.Thumbnails.MINI_KIND);
+        File thumbnailFile = new File(getFilesDir(), "thumb" + System.currentTimeMillis() + "bitmap.jpg");
+        //File thumbnailFile = new File(AlbumUtils.randomJPGPath(this));
+        String bitmapPath = AlbumUtils.saveBitmap(videoThumbnail, thumbnailFile);
+        Log.d("hsc", "结束获取封面图片：" + System.currentTimeMillis());
+
+        mSelectFile.setThumbPath(bitmapPath);
     }
 
     private void initVariable() {
