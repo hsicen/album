@@ -404,13 +404,13 @@ public class VideoRecordActivity extends AppCompatActivity implements
     public static void start(Activity mAct) {
         Intent intent = new Intent(mAct, VideoRecordActivity.class);
         mAct.startActivity(intent);
-        mAct.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        //mAct.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        //overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void hideStatusNavigationBar() {

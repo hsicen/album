@@ -211,7 +211,7 @@ public class VideoPlayActivity extends BaseActivity {
         intent.putExtra("videoPath", path);
         intent.putExtra("isRecord", fromRecord);
         activity.startActivity(intent);
-        activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        //activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     /*** 隐藏状态栏和导航栏*/
@@ -228,7 +228,7 @@ public class VideoPlayActivity extends BaseActivity {
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        //overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     public interface VideoCallback {
