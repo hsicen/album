@@ -11,6 +11,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.media.MediaMetadataRetriever;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowInsets;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +28,7 @@ import android.widget.Toast;
 import com.yanzhenjie.album.AlbumFile;
 import com.yanzhenjie.album.R;
 import com.yanzhenjie.album.app.album.VideoPlayActivity;
+import com.yanzhenjie.album.notchtools.NotchTools;
 import com.yanzhenjie.album.util.AlbumUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -51,7 +54,8 @@ import cameraview.markers.DefaultAutoFocusMarker;
 public class VideoRecordActivity extends AppCompatActivity implements
         View.OnClickListener,
         VideoPlayActivity.VideoCallback,
-        OptionView.Callback {
+        OptionView.Callback ,
+        View.OnApplyWindowInsetsListener {
 
     public static RecordCallback sCallback;
     private final static CameraLogger LOG = CameraLogger.create("DemoApp");
@@ -71,6 +75,7 @@ public class VideoRecordActivity extends AppCompatActivity implements
 
     //视频暂停录制   1录制正常停止    2录制异常停止
     private int stopMode = 1;
+    private View mRoot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +92,12 @@ public class VideoRecordActivity extends AppCompatActivity implements
         mSwitchButton = findViewById(R.id.toggleCamera);
         mTvRecordHint = findViewById(R.id.tv_record_hint);
         mBtnRecord = findViewById(R.id.captureVideo);
+        mRoot = findViewById(R.id.root);
+        if(NotchTools.getFullScreenTools().isNotchScreen(getWindow())){
+            mRoot.setFitsSystemWindows(true);
+            mRoot.requestApplyInsets();
+        }
+//        mRoot.setOnApplyWindowInsetsListener(this);
 
         //init listener
         mBtnRecord.setOnCountDownListener(new CountDownButton.OnCountDownListener() {
@@ -194,6 +205,18 @@ public class VideoRecordActivity extends AppCompatActivity implements
             LOG.i(content);
             //Toast.makeText(this, content, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+        if(NotchTools.getFullScreenTools().isNotchScreen(getWindow())){
+            mRoot.setPadding(0, insets.getSystemWindowInsetTop(), 0, 0);
+        }
+        WindowInsets windowInsets = insets.consumeSystemWindowInsets();
+        if(Build.VERSION_CODES.P <= Build.VERSION.SDK_INT){
+            windowInsets = windowInsets.consumeDisplayCutout();
+        }
+        return windowInsets.consumeStableInsets();
     }
 
     private class Listener extends CameraListener {
@@ -414,12 +437,12 @@ public class VideoRecordActivity extends AppCompatActivity implements
     }
 
     private void hideStatusNavigationBar() {
-        int uiFlags = View.INVISIBLE | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LOW_PROFILE
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-        getWindow().getDecorView().setSystemUiVisibility(uiFlags);
+//        int uiFlags = View.INVISIBLE |View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                | View.SYSTEM_UI_FLAG_LOW_PROFILE
+//                | View.SYSTEM_UI_FLAG_FULLSCREEN|;
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         getWindow().setNavigationBarColor(Color.TRANSPARENT);
     }
 
