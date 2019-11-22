@@ -6,7 +6,8 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FF444444"
+    android:background="#000000"
+    android:fitsSystemWindows="true"
     tools:ignore="HardcodedText">
 
     <android.support.v4.widget.NestedScrollView
