@@ -60,9 +60,8 @@
         app:cameraPreview="glSurface"
         app:cameraPreviewFrameRate="30"
         app:cameraUseDeviceOrientation="true"
-        app:cameraVideoBitRate="2097152"
-        app:cameraVideoCodec="h264"
-        app:cameraVideoSizeMaxWidth="640">
+        app:cameraVideoBitRate="6291456"
+        app:cameraVideoCodec="h264">
 
     </cameraview.CameraView>
 
