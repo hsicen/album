@@ -15,11 +15,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowInsets;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -33,8 +30,6 @@ import com.yanzhenjie.album.util.AlbumUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
 import cameraview.CameraException;
 import cameraview.CameraListener;
@@ -46,15 +41,19 @@ import cameraview.VideoResult;
 import cameraview.controls.Facing;
 import cameraview.controls.Flash;
 import cameraview.controls.Mode;
-import cameraview.controls.Preview;
 import cameraview.frame.Frame;
 import cameraview.frame.FrameProcessor;
 import cameraview.markers.DefaultAutoFocusMarker;
 
+/**
+ * <p>作者：hsicen  2019/11/26 10:34
+ * <p>邮箱：codinghuang@163.com
+ * <p>功能：
+ * <p>描述：视频录制界面
+ */
 public class VideoRecordActivity extends AppCompatActivity implements
         View.OnClickListener,
         VideoPlayActivity.VideoCallback,
-        OptionView.Callback ,
         View.OnApplyWindowInsetsListener {
 
     public static RecordCallback sCallback;
@@ -64,7 +63,6 @@ public class VideoRecordActivity extends AppCompatActivity implements
     private final static int RECORD_TIME = 30000;
 
     private CameraView camera;
-    private ViewGroup controlPanel;
     private boolean isFlash = false;
 
     private ImageButton mFlashButton;
@@ -93,11 +91,10 @@ public class VideoRecordActivity extends AppCompatActivity implements
         mTvRecordHint = findViewById(R.id.tv_record_hint);
         mBtnRecord = findViewById(R.id.captureVideo);
         mRoot = findViewById(R.id.root);
-        if(NotchTools.getFullScreenTools().isNotchScreen(getWindow())){
+        if (NotchTools.getFullScreenTools().isNotchScreen(getWindow())) {
             mRoot.setFitsSystemWindows(true);
             mRoot.requestApplyInsets();
         }
-//        mRoot.setOnApplyWindowInsetsListener(this);
 
         //init listener
         mBtnRecord.setOnCountDownListener(new CountDownButton.OnCountDownListener() {
@@ -137,64 +134,10 @@ public class VideoRecordActivity extends AppCompatActivity implements
             });
         }
 
-        //findViewById(R.id.edit).setOnClickListener(this);   //参数设置
         findViewById(R.id.captureVideo).setOnClickListener(this);  // 点击拍照监听
         findViewById(R.id.toggleCamera).setOnClickListener(this); // 相机切换监听
         findViewById(R.id.ib_light).setOnClickListener(this);  //闪光灯切换监听
         findViewById(R.id.ib_record_close).setOnClickListener(this); //点击返回监听
-
-        controlPanel = findViewById(R.id.controls);
-        ViewGroup group = (ViewGroup) controlPanel.getChildAt(0);
-
-        List<Option<?>> options = Arrays.asList(
-                // Layout
-                new Option.Width(), new Option.Height(),
-                // Engine and preview
-                new Option.Mode(), new Option.Engine(), new Option.Preview(),
-                // Some controls
-                new Option.Flash(), new Option.WhiteBalance(), new Option.Hdr(),
-                new Option.PictureMetering(), new Option.PictureSnapshotMetering(),
-                // Video recording
-                new Option.PreviewFrameRate(), new Option.VideoCodec(), new Option.Audio(),
-                // Gestures
-                new Option.Pinch(), new Option.HorizontalScroll(), new Option.VerticalScroll(),
-                new Option.Tap(), new Option.LongTap(),
-                // Other
-                new Option.Grid(), new Option.GridColor(), new Option.UseDeviceOrientation()
-        );
-        List<Boolean> dividers = Arrays.asList(
-                // Layout
-                false, true,
-                // Engine and preview
-                false, false, true,
-                // Some controls
-                false, false, false, false, true,
-                // Video recording
-                false, false, true,
-                // Gestures
-                false, false, false, false, true,
-                // Watermarks
-                false, false, true,
-                // Other
-                false, false, true
-        );
-        for (int i = 0; i < options.size(); i++) {
-            OptionView view = new OptionView(this);
-            //noinspection unchecked
-            view.setOption(options.get(i), this);
-            view.setHasDivider(dividers.get(i));
-            group.addView(view,
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
-
-        controlPanel.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                BottomSheetBehavior b = BottomSheetBehavior.from(controlPanel);
-                b.setState(BottomSheetBehavior.STATE_HIDDEN);
-            }
-        });
     }
 
     private void message(@NonNull String content, boolean important) {
@@ -209,11 +152,11 @@ public class VideoRecordActivity extends AppCompatActivity implements
 
     @Override
     public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
-        if(NotchTools.getFullScreenTools().isNotchScreen(getWindow())){
+        if (NotchTools.getFullScreenTools().isNotchScreen(getWindow())) {
             mRoot.setPadding(0, insets.getSystemWindowInsetTop(), 0, 0);
         }
         WindowInsets windowInsets = insets.consumeSystemWindowInsets();
-        if(Build.VERSION_CODES.P <= Build.VERSION.SDK_INT){
+        if (Build.VERSION_CODES.P <= Build.VERSION.SDK_INT) {
             windowInsets = windowInsets.consumeDisplayCutout();
         }
         return windowInsets.consumeStableInsets();
@@ -222,12 +165,6 @@ public class VideoRecordActivity extends AppCompatActivity implements
     private class Listener extends CameraListener {
         @Override
         public void onCameraOpened(@NonNull CameraOptions options) {
-            ViewGroup group = (ViewGroup) controlPanel.getChildAt(0);
-            for (int i = 0; i < group.getChildCount(); i++) {
-                OptionView view = (OptionView) group.getChildAt(i);
-                view.onCameraOpened(camera, options);
-            }
-
             toggleFlash(true);
             camera.setAutoFocusMarker(new DefaultAutoFocusMarker());
         }
@@ -241,21 +178,6 @@ public class VideoRecordActivity extends AppCompatActivity implements
         @Override
         public void onPictureTaken(@NonNull PictureResult result) {
             super.onPictureTaken(result);
-            /*if (camera.isTakingVideo()) {
-                message("Captured while taking video. Size=" + result.getSize(), false);
-                return;
-            }
-
-            // This can happen if picture was taken with a gesture.
-            long callbackTime = System.currentTimeMillis();
-            if (mCaptureTime == 0) mCaptureTime = callbackTime - 300;
-            LOG.w("onPictureTaken called! Launching activity. Delay:", callbackTime - mCaptureTime);
-            PicturePreviewActivity.setPictureResult(result);
-            Intent intent = new Intent(CameraActivity.this, PicturePreviewActivity.class);
-            intent.putExtra("delay", callbackTime - mCaptureTime);
-            startActivity(intent);
-            mCaptureTime = 0;
-            LOG.w("onPictureTaken called! Launched activity.");*/
         }
 
         @Override
@@ -319,9 +241,7 @@ public class VideoRecordActivity extends AppCompatActivity implements
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if (id == R.id.edit) {
-            edit();
-        } else if (id == R.id.captureVideo) {
+        if (id == R.id.captureVideo) {
             captureVideo();
         } else if (id == R.id.toggleCamera) {
             toggleCamera();
@@ -332,21 +252,6 @@ public class VideoRecordActivity extends AppCompatActivity implements
         } else if (id == R.id.ib_light) {
             toggleFlash(false);
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        BottomSheetBehavior b = BottomSheetBehavior.from(controlPanel);
-        if (b.getState() != BottomSheetBehavior.STATE_HIDDEN) {
-            b.setState(BottomSheetBehavior.STATE_HIDDEN);
-            return;
-        }
-        super.onBackPressed();
-    }
-
-    private void edit() {
-        BottomSheetBehavior b = BottomSheetBehavior.from(controlPanel);
-        b.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     /*** 点击录制视频*/
@@ -361,7 +266,7 @@ public class VideoRecordActivity extends AppCompatActivity implements
             return;
         }
 
-        camera.takeVideo(new File(AlbumUtils.randomMP4Path(this)), RECORD_TIME);
+        camera.takeVideoSnapshot(new File(AlbumUtils.randomMP4Path(this)), RECORD_TIME);
     }
 
     private void toggleCamera() {
@@ -395,24 +300,6 @@ public class VideoRecordActivity extends AppCompatActivity implements
     }
 
     @Override
-    public <T> boolean onValueChanged(@NonNull Option<T> option, @NonNull T value, @NonNull String name) {
-        if ((option instanceof Option.Width || option instanceof Option.Height)) {
-            Preview preview = camera.getPreview();
-            boolean wrapContent = (Integer) value == ViewGroup.LayoutParams.WRAP_CONTENT;
-            if (preview == Preview.SURFACE && !wrapContent) {
-                message("The SurfaceView preview does not support width or height changes. " +
-                        "The view will act as WRAP_CONTENT by default.", true);
-                return false;
-            }
-        }
-        option.set(camera, value);
-        BottomSheetBehavior b = BottomSheetBehavior.from(controlPanel);
-        b.setState(BottomSheetBehavior.STATE_HIDDEN);
-        message("Changed " + option.getName() + " to " + name, false);
-        return true;
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         boolean valid = true;
@@ -442,7 +329,7 @@ public class VideoRecordActivity extends AppCompatActivity implements
 //                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 //                | View.SYSTEM_UI_FLAG_LOW_PROFILE
 //                | View.SYSTEM_UI_FLAG_FULLSCREEN|;
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         getWindow().setNavigationBarColor(Color.TRANSPARENT);
     }
 

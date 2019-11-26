@@ -6,7 +6,6 @@ import android.media.MediaRecorder;
 
 import androidx.annotation.NonNull;
 
-import cameraview.CameraLogger;
 import cameraview.VideoResult;
 import cameraview.engine.Camera1Engine;
 import cameraview.internal.utils.CamcorderProfiles;
@@ -17,10 +16,6 @@ import cameraview.size.Size;
  * for the Camera1 engine.
  */
 public class Full1VideoRecorder extends FullVideoRecorder {
-
-    private static final String TAG = Full1VideoRecorder.class.getSimpleName();
-    private static final CameraLogger LOG = CameraLogger.create(TAG);
-
     private final Camera1Engine mEngine;
     private final Camera mCamera;
     private final int mCameraId;

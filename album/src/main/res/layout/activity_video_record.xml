@@ -9,31 +9,6 @@
     android:background="#000000"
     tools:ignore="HardcodedText">
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/controls"
-        android:layout_width="0.5dp"
-        android:layout_height="0.5dp"
-        android:background="@android:color/white"
-        android:visibility="invisible"
-        app:behavior_hideable="true"
-        app:behavior_peekHeight="300dp"
-        app:behavior_skipCollapsed="false"
-        app:layout_behavior="@string/bottom_sheet_behavior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </android.support.v4.widget.NestedScrollView>
-
-    <ImageButton
-        android:id="@+id/edit"
-        android:layout_width="0.5dp"
-        android:layout_height="0.5dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:visibility="invisible"
-        app:srcCompat="@drawable/ic_edit" />
-
     <!-- 相机预览-->
     <cameraview.CameraView
         android:id="@+id/camera"
@@ -43,9 +18,8 @@
         android:keepScreenOn="true"
         app:cameraAudio="on"
         app:cameraAudioBitRate="1048576"
-        app:cameraAutoFocusMarker="@string/cameraview_default_autofocus_marker"
         app:cameraEngine="camera1"
-        app:cameraExperimental="false"
+        app:cameraExperimental="true"
         app:cameraFacing="back"
         app:cameraFlash="on"
         app:cameraGestureLongTap="none"
@@ -54,14 +28,14 @@
         app:cameraGestureScrollVertical="none"
         app:cameraGestureTap="none"
         app:cameraGrid="off"
-        app:cameraHdr="on"
         app:cameraMode="video"
         app:cameraPlaySounds="false"
         app:cameraPreview="glSurface"
         app:cameraPreviewFrameRate="30"
         app:cameraUseDeviceOrientation="true"
-        app:cameraVideoBitRate="6291456"
-        app:cameraVideoCodec="h264">
+        app:cameraVideoBitRate="4194304"
+        app:cameraVideoCodec="h264"
+        app:cameraVideoSizeMaxWidth="650">
 
     </cameraview.CameraView>
 
