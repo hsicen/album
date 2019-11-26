@@ -39,6 +39,7 @@
     <style name="Album.Theme.Activity.VideoRecord">
         <item name="windowNoTitle">true</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
     <style name="Album.MatchParent">

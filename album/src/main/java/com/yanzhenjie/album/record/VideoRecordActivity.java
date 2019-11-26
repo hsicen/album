@@ -17,7 +17,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowInsets;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,8 +55,7 @@ import cameraview.markers.DefaultAutoFocusMarker;
  */
 public class VideoRecordActivity extends AppCompatActivity implements
         View.OnClickListener,
-        VideoPlayActivity.VideoCallback,
-        View.OnApplyWindowInsetsListener {
+        VideoPlayActivity.VideoCallback {
 
     public static RecordCallback sCallback;
     private final static CameraLogger LOG = CameraLogger.create("DemoApp");
@@ -94,6 +95,8 @@ public class VideoRecordActivity extends AppCompatActivity implements
         if (NotchTools.getFullScreenTools().isNotchScreen(getWindow())) {
             mRoot.setFitsSystemWindows(true);
             mRoot.requestApplyInsets();
+        } else {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
 
         //init listener
@@ -148,18 +151,6 @@ public class VideoRecordActivity extends AppCompatActivity implements
             LOG.i(content);
             //Toast.makeText(this, content, Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @Override
-    public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
-        if (NotchTools.getFullScreenTools().isNotchScreen(getWindow())) {
-            mRoot.setPadding(0, insets.getSystemWindowInsetTop(), 0, 0);
-        }
-        WindowInsets windowInsets = insets.consumeSystemWindowInsets();
-        if (Build.VERSION_CODES.P <= Build.VERSION.SDK_INT) {
-            windowInsets = windowInsets.consumeDisplayCutout();
-        }
-        return windowInsets.consumeStableInsets();
     }
 
     private class Listener extends CameraListener {
@@ -324,13 +315,7 @@ public class VideoRecordActivity extends AppCompatActivity implements
     }
 
     private void hideStatusNavigationBar() {
-//        int uiFlags = View.INVISIBLE |View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-//                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                | View.SYSTEM_UI_FLAG_LOW_PROFILE
-//                | View.SYSTEM_UI_FLAG_FULLSCREEN|;
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 
     /*** 处理Icon状态*/

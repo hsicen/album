@@ -69,7 +69,7 @@
         <activity
             android:name=".app.album.VideoPlayActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Album.Theme.Activity"
+            android:theme="@style/Album.Theme.Activity.VideoRecord"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
 
         <activity

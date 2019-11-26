@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import android.widget.VideoView;
 import com.yanzhenjie.album.AlbumFile;
 import com.yanzhenjie.album.R;
 import com.yanzhenjie.album.mvp.BaseActivity;
+import com.yanzhenjie.album.notchtools.NotchTools;
 import com.yanzhenjie.album.util.AlbumUtils;
 
 import java.io.File;
@@ -41,6 +43,7 @@ public class VideoPlayActivity extends BaseActivity {
     private TextView mTvFinish;
     private VideoView mVideoView;
     private RelativeLayout mLayoutBottom;
+    private View mRoot;
     private int videoWidth;
     private int videoHeight;
 
@@ -55,12 +58,18 @@ public class VideoPlayActivity extends BaseActivity {
         mTvFinish = findViewById(R.id.tv_finish);
         mVideoView = findViewById(R.id.video_local);
         mLayoutBottom = findViewById(R.id.layout_bottom);
+        mRoot = findViewById(R.id.rl_root);
+        if (NotchTools.getFullScreenTools().isNotchScreen(getWindow())) {
+            mRoot.setFitsSystemWindows(true);
+            mRoot.requestApplyInsets();
+        } else {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
 
         mVideoView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                int height = getResources().getDisplayMetrics().heightPixels;
-                reFinishSize(height);
+                reFinishSize(mRoot.getHeight() - mRoot.getPaddingTop());
             }
         });
 
@@ -119,8 +128,7 @@ public class VideoPlayActivity extends BaseActivity {
                     return;
                 }
 
-                int height = getResources().getDisplayMetrics().heightPixels;
-                reFinishSize(height);
+                reFinishSize(mRoot.getHeight() - mRoot.getPaddingTop());
             }
         });
 
@@ -166,7 +174,6 @@ public class VideoPlayActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        hideStatusNavigationBar();
         mVideoView.resume();
         mTvFinish.postDelayed(new Runnable() {
             @Override
@@ -216,19 +223,7 @@ public class VideoPlayActivity extends BaseActivity {
 
     /*** 隐藏状态栏和导航栏*/
     private void hideStatusNavigationBar() {
-        int uiFlags = View.INVISIBLE | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LOW_PROFILE
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-        getWindow().getDecorView().setSystemUiVisibility(uiFlags);
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        //overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
     }
 
     public interface VideoCallback {
