@@ -1,6 +1,6 @@
 # 相册和视频拍摄
-- 相册参考[这个项目修改](https://github.com/yanzhenjie/Album)，如需使用，请支持原项目
-- 视频参考[这个项目修改](https://github.com/natario1/CameraView)，如需使用，请支持原项目
+- 相册参考[这个项目修改](https://github.com/yanzhenjie/Album)，如需详细使用，请访问[原项目](https://github.com/yanzhenjie/Album)
+- 视频参考[这个项目修改](https://github.com/natario1/CameraView)，如需详细使用，请访问[原项目](https://github.com/natario1/CameraView)
 
 ## Download
 ```groovy
