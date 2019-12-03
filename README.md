@@ -206,9 +206,6 @@ Widget.xxxBuilder(this)
     .build()
 ```
 
-## Contributing
-Before submitting pull requests, contributors must abide by the [agreement](CONTRIBUTING.md) .
-
 ## Proguard-rules
 If you are using ProGuard you might need to add the following options:
 ```txt
