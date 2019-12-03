@@ -28,6 +28,14 @@
     <string name="album_check">選擇</string>
     <string name="album_text_empty">&#160;&#160;</string>
 
+    <string name="album_min_duration">请选择%1$ds以上的视频</string>
+    <string name="album_max_duration">请选择%1$ds以内的视频</string>
+    <string name="album_max_size">请选择%1$dM以内的视频</string>
+    <string name="album_video_error">该格式不支持预览，可发布成功后查看</string>
+    <string name="album_record_error">视频录制失败</string>
+    <string name="album_record_error_finish">视频需录制%1$ds以上</string>
+    <string name="album_record_hint">点击录制\n至少需拍摄%1$d秒以上哦</string>
+
     <string name="album_title_permission_failed">沒有權限</string>
     <string name="album_permission_storage_failed_hint">沒有存儲權限，請在使用之前授權。</string>
     <string name="album_permission_camera_image_failed_hint">沒有相機或者存儲權限，請在使用前授權。</string>

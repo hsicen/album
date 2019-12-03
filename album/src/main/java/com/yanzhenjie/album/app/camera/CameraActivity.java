@@ -46,7 +46,6 @@ public class CameraActivity extends BaseActivity {
     private int mFunction;
     private String mCameraFilePath;
     private int mQuality;
-    private long mLimitDuration;
     private long mLimitBytes;
 
     @Override
@@ -60,7 +59,6 @@ public class CameraActivity extends BaseActivity {
             mFunction = savedInstanceState.getInt(INSTANCE_CAMERA_FUNCTION);
             mCameraFilePath = savedInstanceState.getString(INSTANCE_CAMERA_FILE_PATH);
             mQuality = savedInstanceState.getInt(INSTANCE_CAMERA_QUALITY);
-            mLimitDuration = savedInstanceState.getLong(INSTANCE_CAMERA_DURATION);
             mLimitBytes = savedInstanceState.getLong(INSTANCE_CAMERA_BYTES);
         } else {
             Bundle bundle = getIntent().getExtras();
@@ -68,7 +66,6 @@ public class CameraActivity extends BaseActivity {
             mFunction = bundle.getInt(Album.KEY_INPUT_FUNCTION);
             mCameraFilePath = bundle.getString(Album.KEY_INPUT_FILE_PATH);
             mQuality = bundle.getInt(Album.KEY_INPUT_CAMERA_QUALITY);
-            mLimitDuration = bundle.getLong(Album.KEY_INPUT_CAMERA_DURATION);
             mLimitBytes = bundle.getLong(Album.KEY_INPUT_CAMERA_BYTES);
 
             switch (mFunction) {
@@ -96,7 +93,6 @@ public class CameraActivity extends BaseActivity {
         outState.putInt(INSTANCE_CAMERA_FUNCTION, mFunction);
         outState.putString(INSTANCE_CAMERA_FILE_PATH, mCameraFilePath);
         outState.putInt(INSTANCE_CAMERA_QUALITY, mQuality);
-        outState.putLong(INSTANCE_CAMERA_DURATION, mLimitDuration);
         outState.putLong(INSTANCE_CAMERA_BYTES, mLimitBytes);
         super.onSaveInstanceState(outState);
     }
@@ -109,7 +105,7 @@ public class CameraActivity extends BaseActivity {
                 break;
             }
             case CODE_PERMISSION_VIDEO: {
-                AlbumUtils.takeVideo(this, CODE_ACTIVITY_TAKE_VIDEO, new File(mCameraFilePath), mQuality, mLimitDuration, mLimitBytes);
+                AlbumUtils.takeVideo(this, CODE_ACTIVITY_TAKE_VIDEO, new File(mCameraFilePath), mQuality, mLimitBytes);
                 break;
             }
             default: {
@@ -166,7 +162,6 @@ public class CameraActivity extends BaseActivity {
     }
 
     private void callbackResult() {
-        Log.d("hsc", "系统拍照回调：" + System.currentTimeMillis());
         if (sResult != null) sResult.onAction(mCameraFilePath);
         sResult = null;
         sCancel = null;

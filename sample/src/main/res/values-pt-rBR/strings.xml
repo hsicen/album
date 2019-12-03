@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="app_name">Álbum</string>
+
+    <string name="btn_function_camera">Câmera</string>
+    <string name="btn_function_album">Pictures and Videos</string>
+    <string name="btn_function_picture">Only Pictures</string>
+    <string name="btn_function_video">Only Videos</string>
+    <string name="btn_function_gallery">Gallery</string>
+    <string name="btn_function_change_style">Change Style</string>
+    <string name="btn_function_filter">Filter</string>
+
+    <string name="btn_plus">+</string>
+
+    <string name="title_camera">Câmera</string>
+    <string name="menu_camera_image">Image</string>
+    <string name="menu_camera_video">Vídeo</string>
+
+    <string name="title_image_select">Select image</string>
+    <string name="menu_image_select">Image</string>
+
+    <string name="title_video_select">Select vídeo</string>
+    <string name="menu_video_select">Vídeo</string>
+
+    <string name="title_album_select">Media Álbum</string>
+    <string name="menu_album_select">Álbum</string>
+
+    <string name="title_gallery">Gallery</string>
+
+    <string name="menu_preview">Gallery</string>
+    <string name="btn_gallery_preview">Preview Network Image</string>
+
+    <string name="checkable">Checkable Options</string>
+    <string name="canceled">Canceled</string>
+    <string name="no_selected">Please select, first.</string>
+
+    <string name="hint_image_preview_click">Click on a item to preview them.</string>
+
+    <string name="hint_filter_after_visibility">Did you show the filtered files?</string>
+    <string name="filter_after_visibility_visible">Show</string>
+    <string name="filter_after_visibility_gone">Hide</string>
+</resources>

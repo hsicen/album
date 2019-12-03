@@ -33,6 +33,14 @@
     <string name="album_permission_camera_image_failed_hint">没有相机或者存储权限，请在使用前授权。</string>
     <string name="album_permission_camera_video_failed_hint">没有相机、存储或者录音权限，请在使用前授权。</string>
 
+    <string name="album_min_duration">请选择%1$ds以上的视频</string>
+    <string name="album_max_duration">请选择%1$ds以内的视频</string>
+    <string name="album_max_size">请选择%1$dM以内的视频</string>
+    <string name="album_video_error">该格式不支持预览，可发布成功后查看</string>
+    <string name="album_record_error">视频录制失败</string>
+    <string name="album_record_error_finish">视频需录制%1$ds以上</string>
+    <string name="album_record_hint">点击录制\n至少需拍摄%1$d秒以上哦</string>
+
     <plurals name="album_check_image_limit">
         <item quantity="other">您只能选择%1$d个图片文件</item>
     </plurals>

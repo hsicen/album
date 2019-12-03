@@ -63,7 +63,6 @@ public class PathConversion {
         }
 
         if (mediaType == AlbumFile.TYPE_VIDEO) {
-            Log.d("hsc", "MediaPlayer:  " + System.currentTimeMillis());
             MediaPlayer player = new MediaPlayer();
             try {
                 player.setDataSource(filePath);
@@ -77,8 +76,6 @@ public class PathConversion {
             if (mDurationFilter != null && mDurationFilter.filter(albumFile.getDuration())) {
                 albumFile.setDisable(true);
             }
-
-            Log.d("hsc", "MediaPlayer:  " + System.currentTimeMillis());
         }
         return albumFile;
     }

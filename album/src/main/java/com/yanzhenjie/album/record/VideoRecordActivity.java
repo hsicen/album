@@ -5,20 +5,16 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.media.MediaMetadataRetriever;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -56,12 +52,17 @@ import cameraview.markers.DefaultAutoFocusMarker;
 public class VideoRecordActivity extends AppCompatActivity implements
         View.OnClickListener,
         VideoPlayActivity.VideoCallback {
+    private static final String sMaxTime = "max_record_time";
+    private static final String sMinTime = "min_record_time";
 
     public static RecordCallback sCallback;
     private final static CameraLogger LOG = CameraLogger.create("DemoApp");
     private final static boolean USE_FRAME_PROCESSOR = false;
     private final static boolean DECODE_BITMAP = true;
-    private final static int RECORD_TIME = 30000;
+
+    //拍摄时间限制(单位秒)
+    private int maxDuration = 30;
+    private int minDuration = 3;
 
     private CameraView camera;
     private boolean isFlash = false;
@@ -82,6 +83,8 @@ public class VideoRecordActivity extends AppCompatActivity implements
         hideStatusNavigationBar();
         setContentView(R.layout.activity_video_record);
         CameraLogger.setLogLevel(CameraLogger.LEVEL_VERBOSE);
+        minDuration = getIntent().getIntExtra(sMinTime, 3);
+        maxDuration = getIntent().getIntExtra(sMaxTime, 30);
 
         camera = findViewById(R.id.camera);
         camera.setLifecycleOwner(getLifecycle());
@@ -99,15 +102,9 @@ public class VideoRecordActivity extends AppCompatActivity implements
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
 
-        //init listener
-        mBtnRecord.setOnCountDownListener(new CountDownButton.OnCountDownListener() {
-            @Override
-            public void onTimeEnd() {
-                //录制动画结束
-                LOG.w("录制按钮结束录制");
-            }
-        });
-
+        mTvRecordHint.setText(String.format(getString(R.string.album_record_hint), minDuration));
+        mBtnRecord.setMaxSeconds(maxDuration);
+        mBtnRecord.setMinSeconds(minDuration + 1);
 
         if (USE_FRAME_PROCESSOR) {
             camera.addFrameProcessor(new FrameProcessor() {
@@ -130,7 +127,6 @@ public class VideoRecordActivity extends AppCompatActivity implements
                                 frame.getSize().getHeight()), 100, jpegStream);
                         byte[] jpegByteArray = jpegStream.toByteArray();
                         Bitmap bitmap = BitmapFactory.decodeByteArray(jpegByteArray, 0, jpegByteArray.length);
-                        //noinspection ResultOfMethodCallIgnored
                         bitmap.toString();
                     }
                 }
@@ -183,8 +179,9 @@ public class VideoRecordActivity extends AppCompatActivity implements
             long duration = Long.parseLong(media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
             albumFile.setDuration(duration);
             duration = AlbumUtils.getSpecificTime(duration);
-            if (duration <= 3) {
-                Toast.makeText(VideoRecordActivity.this, "视频需录制3s以上", Toast.LENGTH_SHORT).show();
+            if (duration <= minDuration) {
+                Toast.makeText(VideoRecordActivity.this, String.format(getString(R.string.album_record_error_finish),
+                        minDuration), Toast.LENGTH_SHORT).show();
                 dealIconStatus(true);
                 if (result.getFile().exists()) result.getFile().delete();
                 return;
@@ -257,7 +254,7 @@ public class VideoRecordActivity extends AppCompatActivity implements
             return;
         }
 
-        camera.takeVideoSnapshot(new File(AlbumUtils.randomMP4Path(this)), RECORD_TIME);
+        camera.takeVideoSnapshot(new File(AlbumUtils.randomMP4Path(this)), maxDuration * 1000);
     }
 
     private void toggleCamera() {
@@ -302,16 +299,11 @@ public class VideoRecordActivity extends AppCompatActivity implements
         }
     }
 
-    public static void start(Activity mAct) {
+    public static void start(Activity mAct, int maxDuration, int minDuration) {
         Intent intent = new Intent(mAct, VideoRecordActivity.class);
+        intent.putExtra(sMaxTime, maxDuration);
+        intent.putExtra(sMinTime, minDuration);
         mAct.startActivity(intent);
-        //mAct.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        //overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void hideStatusNavigationBar() {
@@ -354,7 +346,7 @@ public class VideoRecordActivity extends AppCompatActivity implements
             stopMode = 2;
             camera.stopVideo();
             mBtnRecord.stopCountDown();
-            Toast.makeText(this, "视频录制失败", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.album_record_error), Toast.LENGTH_SHORT).show();
         }
     }
 

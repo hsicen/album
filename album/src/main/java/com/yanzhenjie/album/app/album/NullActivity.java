@@ -27,18 +27,15 @@ public class NullActivity extends BaseActivity implements Contract.NullPresenter
         return intent.getStringExtra(KEY_OUTPUT_IMAGE_PATH);
     }
 
-    private Widget mWidget;
     private int mQuality = 1;
     private long mLimitDuration;
     private long mLimitBytes;
-
-    private Contract.NullView mView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.album_activity_null);
-        mView = new NullView(this, this);
+        Contract.NullView mView = new NullView(this, this);
 
         Bundle argument = getIntent().getExtras();
         assert argument != null;
@@ -46,26 +43,28 @@ public class NullActivity extends BaseActivity implements Contract.NullPresenter
         boolean hasCamera = argument.getBoolean(Album.KEY_INPUT_ALLOW_CAMERA);
 
         mQuality = argument.getInt(Album.KEY_INPUT_CAMERA_QUALITY);
-        mLimitDuration = argument.getLong(Album.KEY_INPUT_CAMERA_DURATION);
+        mLimitDuration = argument.getLong(Album.KEY_INPUT_CAMERA_MAX_DURATION);
         mLimitBytes = argument.getLong(Album.KEY_INPUT_CAMERA_BYTES);
 
-        mWidget = argument.getParcelable(Album.KEY_INPUT_WIDGET);
+        Widget mWidget = argument.getParcelable(Album.KEY_INPUT_WIDGET);
         mView.setupViews(mWidget);
-        mView.setTitle(mWidget.getTitle());
 
         switch (function) {
             case Album.FUNCTION_CHOICE_IMAGE: {
                 mView.setMessage(R.string.album_not_found_image);
+                mView.setTitle(getString(R.string.album_all_images));
                 mView.setMakeVideoDisplay(false);
                 break;
             }
             case Album.FUNCTION_CHOICE_VIDEO: {
                 mView.setMessage(R.string.album_not_found_video);
+                mView.setTitle(getString(R.string.album_all_videos));
                 mView.setMakeImageDisplay(false);
                 break;
             }
             case Album.FUNCTION_CHOICE_ALBUM: {
                 mView.setMessage(R.string.album_not_found_album);
+                mView.setTitle(getString(R.string.album_title));
                 break;
             }
             default: {

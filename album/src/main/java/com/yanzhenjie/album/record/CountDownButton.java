@@ -83,7 +83,7 @@ public class CountDownButton extends View implements Runnable {
         strokeColor = a.getColor(R.styleable.CountDownButton_strokeColor, Color.parseColor("#31ffffff"));
         progressColor = a.getColor(R.styleable.CountDownButton_progressColor, Color.parseColor("#437AEB"));
         progressHeadColor = a.getColor(R.styleable.CountDownButton_progressHeadColor, Color.WHITE);
-        minCountDownMilliseconds = a.getInteger(R.styleable.CountDownButton_minCountDownSeconds, 3) * DateUtils.SECOND_IN_MILLIS;
+        minCountDownMilliseconds = a.getInteger(R.styleable.CountDownButton_minCountDownSeconds, 4) * DateUtils.SECOND_IN_MILLIS;
         stopIconSize = a.getDimension(R.styleable.CountDownButton_stopIconSize, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, displayMetrics));
         targetRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, displayMetrics);
         a.recycle();
@@ -192,5 +192,14 @@ public class CountDownButton extends View implements Runnable {
         paint.setShader(gradient);
         canvas.drawRoundRect((rect.left + borderWidth + (rect.centerX() - stopIconSize / 2 - rect.left - borderWidth) * animationFraction), rect.top + borderWidth + (rect.centerY() - stopIconSize / 2 - rect.top - borderWidth) * animationFraction, rect.right - borderWidth + (rect.centerX() + stopIconSize / 2 - rect.right + borderWidth) * animationFraction, rect.bottom - borderWidth + (rect.centerY() + stopIconSize / 2 - rect.bottom + borderWidth) * animationFraction, radiusX + (targetRadius - radiusX) * animationFraction, radiusY + (targetRadius - radiusY) * animationFraction, paint);
         paint.setShader(null);
+    }
+
+    /*** 设置*/
+    public void setMaxSeconds(long countDownMilliseconds) {
+        this.countDownMilliseconds = countDownMilliseconds * DateUtils.SECOND_IN_MILLIS;
+    }
+
+    public void setMinSeconds(long minCountDownMilliseconds) {
+        this.minCountDownMilliseconds = minCountDownMilliseconds * DateUtils.SECOND_IN_MILLIS;
     }
 }

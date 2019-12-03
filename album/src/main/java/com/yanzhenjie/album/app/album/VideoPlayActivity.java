@@ -3,14 +3,12 @@ package com.yanzhenjie.album.app.album;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -37,6 +35,8 @@ public class VideoPlayActivity extends BaseActivity {
     //预览完成回调
     public static VideoCallback sCallback;
     public static AlbumFile mSelectFile;
+    private static final String sVideoPath = "videoPath";
+    private static final String sRecord = "isRecord";
 
     private Toolbar mToolbar;
     private String mVideoPath;
@@ -98,20 +98,17 @@ public class VideoPlayActivity extends BaseActivity {
     private void getThumbPath() {
         if (!TextUtils.isEmpty(mSelectFile.getThumbPath())) return;
 
-        Log.d("hsc", "开始获取封面图片：" + System.currentTimeMillis());
         Bitmap videoThumbnail = ThumbnailUtils.createVideoThumbnail(mSelectFile.getPath(),
                 MediaStore.Images.Thumbnails.MINI_KIND);
         File thumbnailFile = new File(getFilesDir(), "thumb" + System.currentTimeMillis() + "bitmap.jpg");
-        //File thumbnailFile = new File(AlbumUtils.randomJPGPath(this));
         String bitmapPath = AlbumUtils.saveBitmap(videoThumbnail, thumbnailFile);
-        Log.d("hsc", "结束获取封面图片：" + System.currentTimeMillis());
 
         mSelectFile.setThumbPath(bitmapPath);
     }
 
     private void initVariable() {
-        mVideoPath = getIntent().getStringExtra("videoPath");
-        Log.d("hsc", "视频路径为： " + mVideoPath);
+        mVideoPath = getIntent().getStringExtra(sVideoPath);
+        isRecord = getIntent().getBooleanExtra(sRecord, false);
     }
 
     private void initVideo() {
@@ -124,7 +121,7 @@ public class VideoPlayActivity extends BaseActivity {
                 videoHeight = mp.getVideoHeight();
 
                 if (0 == videoWidth && 0 == videoHeight) {
-                    Toast.makeText(VideoPlayActivity.this, "该格式不支持预览，可发布成功后查看", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VideoPlayActivity.this, getString(R.string.album_video_error), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -143,7 +140,7 @@ public class VideoPlayActivity extends BaseActivity {
         mVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
-                Toast.makeText(VideoPlayActivity.this, "该格式不支持预览，可发布成功后查看", Toast.LENGTH_SHORT).show();
+                Toast.makeText(VideoPlayActivity.this, getString(R.string.album_video_error), Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
@@ -215,10 +212,9 @@ public class VideoPlayActivity extends BaseActivity {
      * @param path 视频路径 */
     public static void start(Activity activity, String path, boolean fromRecord) {
         Intent intent = new Intent(activity, VideoPlayActivity.class);
-        intent.putExtra("videoPath", path);
-        intent.putExtra("isRecord", fromRecord);
+        intent.putExtra(sVideoPath, path);
+        intent.putExtra(sRecord, fromRecord);
         activity.startActivity(intent);
-        //activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     /*** 隐藏状态栏和导航栏*/

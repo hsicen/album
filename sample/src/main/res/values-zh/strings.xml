@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="app_name">图库</string>
+
+    <string name="btn_function_camera">相机</string>
+    <string name="btn_function_album">图片和视频</string>
+    <string name="btn_function_picture">图片</string>
+    <string name="btn_function_video">视频</string>
+    <string name="btn_function_gallery">图库</string>
+    <string name="btn_function_change_style">改变主图</string>
+    <string name="btn_function_filter">过滤</string>
+
+    <string name="btn_plus">+</string>
+
+    <string name="title_camera">相机</string>
+    <string name="menu_camera_image">图片</string>
+    <string name="menu_camera_video">视频</string>
+
+    <string name="title_image_select">所有图片</string>
+    <string name="menu_image_select">图片</string>
+
+    <string name="title_video_select">所有视频</string>
+    <string name="menu_video_select">视频</string>
+
+    <string name="title_album_select">媒体图</string>
+    <string name="menu_album_select">图库</string>
+
+    <string name="title_gallery">图库</string>
+
+    <string name="menu_preview">图库</string>
+    <string name="btn_gallery_preview">预览网页图片</string>
+
+    <string name="checkable">选中条件</string>
+    <string name="canceled">取消</string>
+    <string name="no_selected">请先选择</string>
+
+    <string name="hint_image_preview_click">点击预览</string>
+
+    <string name="hint_filter_after_visibility">是否显示过滤掉的文件</string>
+    <string name="filter_after_visibility_visible">展示</string>
+    <string name="filter_after_visibility_gone">隐藏</string>
+</resources>

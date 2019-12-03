@@ -84,6 +84,8 @@ public class VideoActivity extends AppCompatActivity {
                 .quality(1)
                 .limitBytes(300 * 1024 * 1024)  //Byte
                 .limitDuration(1000 * 30) //毫秒
+                .maxDuration(30)
+                .minDuration(3)
                 .widget(Widget.newLightBuilder(this)
                         .title("所有视频")
                         .statusBarColor(Color.WHITE)

@@ -28,8 +28,12 @@ public abstract class BasicChoiceVideoWrapper<Returner extends BasicChoiceVideoW
     }
 
     int mQuality = 1;
-    long mLimitDuration = Integer.MAX_VALUE;
-    long mLimitBytes = Integer.MAX_VALUE;
+    long mLimitDuration = 30;
+    long mLimitBytes = 300*1024*1024;
+
+    //拍摄时间限制 (单位秒)
+    int maxDuration = 30;
+    int minDuration = 3;
 
     /**
      * Set the quality when taking video, should be 0 or 1. Currently value 0 means low quality, and value 1 means high quality.
@@ -50,6 +54,21 @@ public abstract class BasicChoiceVideoWrapper<Returner extends BasicChoiceVideoW
         this.mLimitDuration = duration;
         return (Returner) this;
     }
+
+    /*** 拍摄时间限制 (单位秒)
+     * @param duration seconds */
+    public Returner maxDuration(@IntRange(from = 1) int duration) {
+        this.maxDuration = duration;
+        return (Returner) this;
+    }
+
+    /*** 拍摄时间限制 (单位秒)
+     * @param duration seconds*/
+    public Returner minDuration(@IntRange(from = 1) int duration) {
+        this.minDuration = duration;
+        return (Returner) this;
+    }
+
 
     /**
      * Specify the maximum allowed size.

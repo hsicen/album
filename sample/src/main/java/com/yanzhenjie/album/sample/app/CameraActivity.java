@@ -29,12 +29,15 @@ import android.widget.Toast;
 
 import com.yanzhenjie.album.Action;
 import com.yanzhenjie.album.Album;
+import com.yanzhenjie.album.AlbumFile;
+import com.yanzhenjie.album.app.album.VideoPlayActivity;
+import com.yanzhenjie.album.record.VideoRecordActivity;
 import com.yanzhenjie.album.sample.R;
 
 /**
  * Created by YanZhenjie on 2017/8/17.
  */
-public class CameraActivity extends AppCompatActivity {
+public class CameraActivity extends AppCompatActivity implements VideoRecordActivity.RecordCallback {
 
     TextView mTextView;
     private ImageView mImageView;
@@ -77,29 +80,8 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     private void recordVideo() {
-        Album.camera(this)
-                .video()
-//                .filePath()
-                .quality(1)
-                .limitDuration(Integer.MAX_VALUE)
-                .limitBytes(Integer.MAX_VALUE)
-                .onResult(new Action<String>() {
-                    @Override
-                    public void onAction(@NonNull String result) {
-                        mTextView.setText(result);
-
-                        Album.getAlbumConfig()
-                                .getAlbumLoader()
-                                .load(mImageView, result);
-                    }
-                })
-                .onCancel(new Action<String>() {
-                    @Override
-                    public void onAction(@NonNull String result) {
-                        Toast.makeText(CameraActivity.this, R.string.canceled, Toast.LENGTH_LONG).show();
-                    }
-                })
-                .start();
+        VideoRecordActivity.sCallback = this;
+        VideoRecordActivity.start(this, 30, 10);
     }
 
     @Override
@@ -126,5 +108,15 @@ public class CameraActivity extends AppCompatActivity {
             }
         }
         return true;
+    }
+
+    @Override
+    public void onRecordBack() {
+        AlbumFile recordFile = VideoPlayActivity.mSelectFile;
+        mTextView.setText(recordFile.getPath());
+
+        Album.getAlbumConfig()
+                .getAlbumLoader()
+                .load(mImageView, recordFile.getPath());
     }
 }

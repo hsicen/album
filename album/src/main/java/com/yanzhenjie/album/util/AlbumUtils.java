@@ -136,17 +136,15 @@ public class AlbumUtils {
      * @param requestCode code, see {@link Activity# onActivityResult(int, int, Intent)}.
      * @param outPath     file path.
      * @param quality     currently value 0 means low quality, suitable for MMS messages, and  value 1 means high quality.
-     * @param duration    specify the maximum allowed recording duration in seconds.
      * @param limitBytes  specify the maximum allowed size.
      */
     public static void takeVideo(@NonNull Activity activity, int requestCode, File outPath,
                                  @IntRange(from = 0, to = 1) int quality,
-                                 @IntRange(from = 1) long duration,
                                  @IntRange(from = 1) long limitBytes) {
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         Uri uri = getUri(activity, outPath);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, quality);
         intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30L);
         intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
         intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, limitBytes);
@@ -173,14 +171,9 @@ public class AlbumUtils {
         return uri;
     }
 
-    /**
-     * Generate a random jpg file path.
-     *
-     * @return file path.
-     * @deprecated use {@link #randomJPGPath(Context)} instead.
-     */
+    /*** Generate a random jpg file path.
+     * @return file path.*/
     @NonNull
-    @Deprecated
     public static String randomJPGPath() {
         File bucket = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
         return randomJPGPath(bucket);
@@ -518,7 +511,6 @@ public class AlbumUtils {
                 bitmapFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.d("hsc", "创建文件失败");
                 return "";
             }
         }

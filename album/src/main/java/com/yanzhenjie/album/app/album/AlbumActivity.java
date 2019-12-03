@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -32,7 +31,6 @@ import com.yanzhenjie.album.impl.OnItemClickListener;
 import com.yanzhenjie.album.mvp.BaseActivity;
 import com.yanzhenjie.album.record.VideoRecordActivity;
 import com.yanzhenjie.album.util.AlbumUtils;
-import com.yanzhenjie.album.widget.LoadingDialog;
 import com.yanzhenjie.mediascanner.MediaScanner;
 
 import java.io.File;
@@ -57,6 +55,11 @@ public class AlbumActivity extends BaseActivity implements
     private static final int CODE_ACTIVITY_NULL = 1;
     private static final int CODE_PERMISSION_STORAGE = 1;
 
+    //拍摄时间限制(单位秒)
+    private int maxDuration = 30;
+    private int minDuration = 3;
+    private long mLimitBytes = 300 * 1024 * 1024;
+
     public static Filter<Long> sSizeFilter;
     public static Filter<String> sMimeFilter;
     public static Filter<Long> sDurationFilter;
@@ -73,11 +76,6 @@ public class AlbumActivity extends BaseActivity implements
     private int mColumnCount;
     private boolean mHasCamera;
     private int mLimitCount;
-
-    private int mQuality;
-    private long mLimitDuration;
-    private long mLimitBytes;
-
     private boolean mFilterVisibility;
 
     private ArrayList<AlbumFile> mCheckedList;
@@ -86,7 +84,6 @@ public class AlbumActivity extends BaseActivity implements
     private Contract.AlbumView mView;
     private FolderDialog mFolderDialog;
     private PopupMenu mCameraPopupMenu;
-    private LoadingDialog mLoadingDialog;
 
     private MediaReadTask mMediaReadTask;
     private Boolean takeBack = false;
@@ -115,8 +112,8 @@ public class AlbumActivity extends BaseActivity implements
         mColumnCount = argument.getInt(Album.KEY_INPUT_COLUMN_COUNT);
         mHasCamera = argument.getBoolean(Album.KEY_INPUT_ALLOW_CAMERA);
         mLimitCount = argument.getInt(Album.KEY_INPUT_LIMIT_COUNT);
-        mQuality = argument.getInt(Album.KEY_INPUT_CAMERA_QUALITY);
-        mLimitDuration = argument.getLong(Album.KEY_INPUT_CAMERA_DURATION);
+        maxDuration = argument.getInt(Album.KEY_INPUT_CAMERA_MAX_DURATION);
+        minDuration = argument.getInt(Album.KEY_INPUT_CAMERA_MIN_DURATION);
         mLimitBytes = argument.getLong(Album.KEY_INPUT_CAMERA_BYTES);
         mFilterVisibility = argument.getBoolean(Album.KEY_INPUT_FILTER_VISIBILITY);
     }
@@ -187,12 +184,7 @@ public class AlbumActivity extends BaseActivity implements
         mAlbumFolders = albumFolders;
         mCheckedList = checkedFiles;
 
-        if (mAlbumFolders.get(0).getAlbumFiles().isEmpty()) {
-            Log.d("hsc", "没有媒体数据");
-           /* Intent intent = new Intent(this, NullActivity.class);
-            intent.putExtras(getIntent());
-            startActivityForResult(intent, CODE_ACTIVITY_NULL);*/
-        } else {
+        if (!mAlbumFolders.get(0).getAlbumFiles().isEmpty()) {
             showFolderAlbumFiles(0);
             int count = mCheckedList.size();
             mView.setCheckedCount(count);
@@ -203,17 +195,13 @@ public class AlbumActivity extends BaseActivity implements
     /*** 拍照和录制视频回调处理*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case CODE_ACTIVITY_NULL: {
-                if (resultCode == RESULT_OK) {
-                    String imagePath = NullActivity.parsePath(data);
-                    String mimeType = AlbumUtils.getMimeType(imagePath);
-                    if (!TextUtils.isEmpty(mimeType)) mCameraAction.onAction(imagePath);
-                    Log.d("hsc", "拍照回调：" + System.currentTimeMillis());
-                } else {
-                    callbackCancel();
-                }
-                break;
+        if (requestCode == CODE_ACTIVITY_NULL) {
+            if (resultCode == RESULT_OK) {
+                String imagePath = NullActivity.parsePath(data);
+                String mimeType = AlbumUtils.getMimeType(imagePath);
+                if (!TextUtils.isEmpty(mimeType)) mCameraAction.onAction(imagePath);
+            } else {
+                callbackCancel();
             }
         }
     }
@@ -312,42 +300,26 @@ public class AlbumActivity extends BaseActivity implements
         Album.camera(this)
                 .image()
                 .filePath(filePath)
-                .onResult(mCameraAction) //拍照回调处理
+                .onResult(mCameraAction)
                 .start();
     }
 
     /*** 点击录制视频逻辑处理*/
     private void takeVideo() {
-        /*String filePath;
-        if (mCurrentFolder == 0) {
-            filePath = AlbumUtils.randomMP4Path();
-        } else {
-            File file = new File(mAlbumFolders.get(mCurrentFolder).getAlbumFiles().get(0).getPath());
-            filePath = AlbumUtils.randomMP4Path(file.getParentFile());
-        }
-        Album.camera(this)
-                .video()
-                .filePath(filePath)
-                .quality(mQuality)
-                .limitDuration(mLimitDuration)
-                .limitBytes(mLimitBytes)
-                .onResult(mCameraAction) //拍摄回调处理
-                .start();*/
         VideoRecordActivity.sCallback = this;
-        VideoRecordActivity.start(this);
+        VideoRecordActivity.start(this, maxDuration, minDuration);
     }
 
     /*** 拍照回调处理*/
     private Action<String> mCameraAction = new Action<String>() {
         @Override
         public void onAction(@NonNull String result) {
-            Log.d("hsc", "列表页面回调：" + System.currentTimeMillis());
             if (mChoiceMode == Album.MODE_SINGLE && mFunction == Album.FUNCTION_CAMERA_VIDEO) {
                 MediaMetadataRetriever media = new MediaMetadataRetriever();
                 media.setDataSource(result);
                 long duration = Long.parseLong(media.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
                 long seconds = AlbumUtils.getSpecificTime(duration);
-                if (seconds > 3 && seconds <= 30) {
+                if (seconds > minDuration && seconds <= maxDuration) {
                     AlbumFile albumFile = new AlbumFile();
                     albumFile.setPath(result);
                     albumFile.setDuration(duration);
@@ -387,19 +359,20 @@ public class AlbumActivity extends BaseActivity implements
     /*** 转化结果回调*/
     @Override
     public void onConvertCallback(AlbumFile albumFile) {
-        Log.d("hsc", "转化处理回调：" + System.currentTimeMillis());
         if (mChoiceMode == Album.MODE_SINGLE) {
             if (mFunction == Album.FUNCTION_CAMERA_VIDEO) {
                 long duration = AlbumUtils.getSpecificTime(albumFile.getDuration());
-                if (duration <= 3) {
-                    Toast.makeText(this, "请选择3s以上的视频", Toast.LENGTH_SHORT).show();
+                if (duration <= minDuration) {
+                    Toast.makeText(this, String.format(getString(R.string.album_min_duration), minDuration),
+                            Toast.LENGTH_SHORT).show();
                     takeBack = true;
                     addFileToList(albumFile);
                     return;
                 }
 
-                if (duration > 30) {
-                    Toast.makeText(this, "请选择30s以内的视频", Toast.LENGTH_SHORT).show();
+                if (duration > maxDuration) {
+                    Toast.makeText(this, String.format(getString(R.string.album_max_duration), maxDuration),
+                            Toast.LENGTH_SHORT).show();
                     takeBack = true;
                     addFileToList(albumFile);
                     return;
@@ -419,8 +392,6 @@ public class AlbumActivity extends BaseActivity implements
                 addFileToList(albumFile);
             }
         }
-
-        //dismissLoadingDialog();
     }
 
     private void addFileToList(AlbumFile albumFile) {
@@ -517,18 +488,21 @@ public class AlbumActivity extends BaseActivity implements
                     AlbumFile albumFile = mAlbumFolders.get(mCurrentFolder).getAlbumFiles().get(position);
                     long duration = AlbumUtils.getSpecificTime(albumFile.getDuration());
 
-                    if (duration <= 3) {
-                        Toast.makeText(this, "请选择3s以上的视频", Toast.LENGTH_SHORT).show();
+                    if (duration <= minDuration) {
+                        Toast.makeText(this, String.format(getString(R.string.album_min_duration), minDuration),
+                                Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    if (duration > 30) {
-                        Toast.makeText(this, "请选择30s以内的视频", Toast.LENGTH_SHORT).show();
+                    if (duration > maxDuration) {
+                        Toast.makeText(this, String.format(getString(R.string.album_max_duration), maxDuration),
+                                Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    if (albumFile.getSize() > 300 * 1024 * 1024) {  //B -> KB -> MB
-                        Toast.makeText(this, "请选择300M以内的视频", Toast.LENGTH_SHORT).show();
+                    if (albumFile.getSize() > mLimitBytes) {  //B -> KB -> MB
+                        Toast.makeText(this, String.format(getString(R.string.album_max_size), mLimitBytes / (1024 * 1024)),
+                                Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -648,8 +622,6 @@ public class AlbumActivity extends BaseActivity implements
     @Override
     public void onThumbnailCallback(ArrayList<AlbumFile> albumFiles) {
         if (sResult != null) sResult.onAction(albumFiles);  //回调成功给调用层
-        //dismissLoadingDialog();
-        Log.d("hsc", "最终结束回调：" + System.currentTimeMillis());
         finish();
     }
 
@@ -657,24 +629,6 @@ public class AlbumActivity extends BaseActivity implements
     private void callbackCancel() {
         if (sCancel != null) sCancel.onAction("User canceled."); //回调失败给调用层
         finish();
-    }
-
-    /*** 显示资源加载弹窗.*/
-    private void showLoadingDialog() {
-        if (mLoadingDialog == null) {
-            mLoadingDialog = new LoadingDialog(this);
-            mLoadingDialog.setupViews(mWidget);
-        }
-        if (!mLoadingDialog.isShowing()) {
-            mLoadingDialog.show();
-        }
-    }
-
-    /***取消资源加载弹窗.*/
-    public void dismissLoadingDialog() {
-        if (mLoadingDialog != null && mLoadingDialog.isShowing()) {
-            mLoadingDialog.dismiss();
-        }
     }
 
     @Override
