@@ -1,15 +1,15 @@
-# Album
-本项目为练手修改，如需使用请访问[原项目](https://github.com/yanzhenjie/Album)
+# 相册和视频拍摄
+- 相册参考[这个项目修改](https://github.com/yanzhenjie/Album)，如需使用，请支持原项目
+- 视频参考[这个项目修改](https://github.com/natario1/CameraView)，如需使用，请支持原项目
 
 ## Download
 ```groovy
-implementation 'com.github.Hsicen:album:2.1.4'
+implementation 'com.github.Hsicen:album:latest_version'
 ```
 
 ## Usage
-Developers must configure `AlbumLoader` to make Album work normally, and AlbumLoader is used to load thumbnails of images and videos.
+自定义图片加载Loader
 
-This is an example:
 ```java
 public class MediaLoader implements AlbumLoader {
 
@@ -29,7 +29,7 @@ public class MediaLoader implements AlbumLoader {
     }
 }
 ```
-The example uses [Glide](https://github.com/bumptech/glide) to load thumbnails of pictures and videos. Please remember to configure the `AlbumLoader` you just implemented.
+在使用之前先初始化
 ```java
 Album.initialize(AlbumConfig.newBuilder(this)
     .setAlbumLoader(new MediaLoader())
@@ -37,7 +37,7 @@ Album.initialize(AlbumConfig.newBuilder(this)
     .build());
 ```
 
-### Image and video mix options
+### 图片视频混合选择
 ```java
 Album.album(this) // Image and video mix options.
     .multipleChoice() // Multi-Mode, Single-Mode: singleChoice().
@@ -45,8 +45,6 @@ Album.album(this) // Image and video mix options.
     .selectCount()  // Choose up to a few images.
     .camera() // Whether the camera appears in the Item.
     .cameraVideoQuality(1) // Video quality, [0, 1].
-    .cameraVideoLimitDuration(Long.MAX_VALUE) // The longest duration of the video is in milliseconds.
-    .cameraVideoLimitBytes()(Long.MAX_VALUE) // Maximum size of the video, in bytes.
     .checkedList() // To reverse the list.
     .filterSize() // Filter the file size.
     .filterMimeType() // Filter file format.
@@ -67,7 +65,7 @@ Album.album(this) // Image and video mix options.
     .start();
 ```
 
-### Image Selection
+### 图片选择
 ```java
 Album.image(this) // Image selection.
     .multipleChoice()
@@ -91,9 +89,7 @@ Album.image(this) // Image selection.
     .start();
 ```
 
-If developer want to crop the image, please use [Durban](https://github.com/yanzhenjie/Durban).
-
-### Video Selection
+### 视频选择
 ```java
 Album.video(this) // Video selection.
     .multipleChoice()
@@ -102,6 +98,8 @@ Album.video(this) // Video selection.
     .selectCount(6)
     .checkedList(mAlbumFiles)
     .filterSize()
+    .maxDuration(30)  //最大拍摄时长，单位秒
+    .minDuration(3)  //最小拍摄时长，单位秒
     .filterMimeType()
     .filterDuration()
     .afterFilterVisibility() // Show the filtered files, but they are not available.
@@ -118,7 +116,7 @@ Album.video(this) // Video selection.
     .start();
 ```
 
-### Take Picture
+### 直接调用系统相机拍照
 ```java
 Album.camera(this) // Camera function.
     .image() // Take Picture.
@@ -136,102 +134,14 @@ Album.camera(this) // Camera function.
     .start();
 ```
 
-If developer want to crop the image, please use [Durban](https://github.com/yanzhenjie/Durban).
 
-### Record Video
+### 直接调用视频录制
 ```java
-Album.camera(this)
-    .video() // Record Video.
-    .filePath()
-    .quality(1) // Video quality, [0, 1].
-    .limitDuration(Long.MAX_VALUE) // The longest duration of the video is in milliseconds.
-    .limitBytes(Long.MAX_VALUE) // Maximum size of the video, in bytes.
-    .onResult(new Action<String>() {
-        @Override
-        public void onAction(@NonNull String result) {
-        }
-    })
-    .onCancel(new Action<String>() {
-        @Override
-        public void onAction(@NonNull String result) {
-        }
-    })
-    .start();
+VideoRecordActivity.sCallback = this;  // 实现视频录制回调接口 (后期优化)
+VideoRecordActivity.start(this, 30, 10);
 ```
 
-### Gallery
-```java
-// Preview AlbumFile:
-Album.galleryAlbum(this)
-...
-
-// Preview path:
-Album.gallery(this)
-    .checkedList(imageList) // List of image to view: ArrayList<String>.
-    .checkable(true) // Whether there is a selection function.
-    .onResult(new Action<ArrayList<String>>() { // If checkable(false), action not required.
-        @Override
-        public void onAction(@NonNull ArrayList<String> result) {
-        }
-    })
-    .onCancel(new Action<String>() {
-        @Override
-        public void onAction(@NonNull String result) {
-        }
-    })
-    .start();
-```
-
-> If `checkable(false)`, listener not required, the `CheckBox` and the `FinishButton` will be not appear.
-
-The user may click or long press on the preview image and the developer can listen to both events:
-```java
-Album.gallery(this)
-    ...
-    .itemClick(new ItemAction<String>() {
-        @Override
-        public void onAction(Context context, String item) {
-        }
-    })
-    .itemLongClick(new ItemAction<String>() {
-        @Override
-        public void onAction(Context context, String item) {
-        }
-    })
-    .start();
-```
-
-### Capabilities of AlbumFile
-`AlbumFile` is the result of the selection of images and videos, The properties of the image and video are different, and their different attributes are listed below.
-
-#### Image
-```java
-public int getMediaType(); // File type, the image is AlbumFile.TYPE_IMAGE.
-public String getPath(); // File path, must not be empty.
-public String getBucketName(); // The name of the folder where the file is located.
-public String getMimeType(); // File MimeType, for example: image/jpeg.
-public long getAddDate(); // File to add date, must have.
-public float getLatitude(); // The latitude of the file, may be zero.
-public float getLongitude(); // The longitude of the file, may be zero.
-public long getSize(); // File size in bytes.
-public String getThumbPath(); // This is a small thumbnail.
-```
-
-#### Video
-```java
-public int getMediaType(); // File type, the video is AlbumFile.TYPE_VIDEO.
-public String getPath(); // File path, must not be empty.
-public String getBucketName(); // The name of the folder where the file is located.
-public String getMimeType(); // File MimeType, for example: image/jpeg.
-public long getAddDate(); // File to add date, must have.
-public float getLatitude(); // The latitude of the file, may be zero.
-public float getLongitude(); // The longitude of the file, may be zero.
-public long getSize(); // File size in bytes.
-public long getDuration(); // Video duration, must have.
-public String getThumbPath(); // This is a small thumbnail.
-```
-
-### Customize UI
+### 自定义UI样式(只能自定义颜色)
 Through `Widget`, developer can configure the title, color of StatusBar, color of NavigationBar and so on.
 
 ```java
@@ -288,17 +198,6 @@ Widget.xxxBuilder(this)
             .build()
     )
     .build()
-```
-
-### Configuration language
-Album defaults to English and changes with the system language. Unfortunately, Album only supports English, Simplified Chinese, Traditional Chinese and Portuguese. However, developers can copy the items in Album's `string.xml` into your project for translation, the best thing is that you can [contribute](CONTRIBUTING.md) and submit pull requests to perfect Album.
-
-Developers can specify Album's language:
-```java
-Album.initialize(AlbumConfig.newBuilder(this)
-    ...
-    .setLocale(Locale.ENGLISH)
-    .build());
 ```
 
 ## Contributing
