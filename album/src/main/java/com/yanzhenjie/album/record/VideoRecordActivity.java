@@ -180,9 +180,9 @@ public class VideoRecordActivity extends AppCompatActivity implements
             albumFile.setDuration(duration);
             duration = AlbumUtils.getSpecificTime(duration);
             if (duration <= minDuration) {
+                dealIconStatus(true);
                 Toast.makeText(VideoRecordActivity.this, String.format(getString(R.string.album_record_error_finish),
                         minDuration), Toast.LENGTH_SHORT).show();
-                dealIconStatus(true);
                 if (result.getFile().exists()) result.getFile().delete();
                 return;
             }
@@ -352,13 +352,13 @@ public class VideoRecordActivity extends AppCompatActivity implements
 
     @Override
     public void onVideoBack() {
+        sCallback.onRecordBack(VideoPlayActivity.mSelectFile.getPath());
         finish();
-        sCallback.onRecordBack();
     }
 
     public interface RecordCallback {
 
         /*** 预览完成回调*/
-        void onRecordBack();
+        void onRecordBack(String filePath);
     }
 }

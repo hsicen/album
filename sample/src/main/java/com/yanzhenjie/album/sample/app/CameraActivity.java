@@ -29,15 +29,13 @@ import android.widget.Toast;
 
 import com.yanzhenjie.album.Action;
 import com.yanzhenjie.album.Album;
-import com.yanzhenjie.album.AlbumFile;
-import com.yanzhenjie.album.app.album.VideoPlayActivity;
 import com.yanzhenjie.album.record.VideoRecordActivity;
 import com.yanzhenjie.album.sample.R;
 
 /**
  * Created by YanZhenjie on 2017/8/17.
  */
-public class CameraActivity extends AppCompatActivity implements VideoRecordActivity.RecordCallback {
+public class CameraActivity extends AppCompatActivity {
 
     TextView mTextView;
     private ImageView mImageView;
@@ -80,8 +78,18 @@ public class CameraActivity extends AppCompatActivity implements VideoRecordActi
     }
 
     private void recordVideo() {
-        VideoRecordActivity.sCallback = this;
-        VideoRecordActivity.start(this, 30, 10);
+        VideoRecordActivity.sCallback = new VideoRecordActivity.RecordCallback() {
+            @Override
+            public void onRecordBack(String filePath) {
+                mTextView.setText(filePath);
+
+                Album.getAlbumConfig()
+                        .getAlbumLoader()
+                        .load(mImageView, filePath);
+            }
+        };
+
+        VideoRecordActivity.start(this, 30, 3);
     }
 
     @Override
@@ -108,15 +116,5 @@ public class CameraActivity extends AppCompatActivity implements VideoRecordActi
             }
         }
         return true;
-    }
-
-    @Override
-    public void onRecordBack() {
-        AlbumFile recordFile = VideoPlayActivity.mSelectFile;
-        mTextView.setText(recordFile.getPath());
-
-        Album.getAlbumConfig()
-                .getAlbumLoader()
-                .load(mImageView, recordFile.getPath());
     }
 }

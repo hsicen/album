@@ -642,7 +642,7 @@ public class AlbumActivity extends BaseActivity implements
     }
 
     @Override
-    public void onRecordBack() {
+    public void onRecordBack(String filePath) {
         ArrayList<AlbumFile> tempList = new ArrayList<>();
         tempList.add(VideoPlayActivity.mSelectFile);
         onThumbnailCallback(tempList);

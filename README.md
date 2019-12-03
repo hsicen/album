@@ -137,8 +137,14 @@ Album.camera(this) // Camera function.
 
 ### 直接调用视频录制
 ```java
-VideoRecordActivity.sCallback = this;  // 实现视频录制回调接口 (后期优化)
-VideoRecordActivity.start(this, 30, 10);
+VideoRecordActivity.sCallback = new VideoRecordActivity.RecordCallback() {
+    @Override
+    public void onRecordBack(String filePath) {
+        //回调处理
+    }
+};
+        
+VideoRecordActivity.start(this, 30, 3);
 ```
 
 ### 自定义UI样式(只能自定义颜色)
