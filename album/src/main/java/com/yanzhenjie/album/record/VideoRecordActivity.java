@@ -76,6 +76,7 @@ public class VideoRecordActivity extends AppCompatActivity implements
     //视频暂停录制   1录制正常停止    2录制异常停止
     private int stopMode = 1;
     private View mRoot;
+    private boolean isRecording = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +84,10 @@ public class VideoRecordActivity extends AppCompatActivity implements
         hideStatusNavigationBar();
         setContentView(R.layout.activity_video_record);
         CameraLogger.setLogLevel(CameraLogger.LEVEL_VERBOSE);
-        minDuration = getIntent().getIntExtra(sMinTime, 3);
-        maxDuration = getIntent().getIntExtra(sMaxTime, 30);
+        minDuration = getIntent().getIntExtra(sMinTime, minDuration);
+        maxDuration = getIntent().getIntExtra(sMaxTime, maxDuration);
+        minDuration = (minDuration < 0) ? 0 : minDuration;
+        maxDuration = (maxDuration <= 0) ? Integer.MAX_VALUE : maxDuration;
 
         camera = findViewById(R.id.camera);
         camera.setLifecycleOwner(getLifecycle());
@@ -199,6 +202,7 @@ public class VideoRecordActivity extends AppCompatActivity implements
         @Override
         public void onVideoRecordingStart() {
             super.onVideoRecordingStart();
+            isRecording = true;
             mBtnRecord.startCountDown();
             stopMode = 1;
             dealIconStatus(false);
@@ -208,6 +212,7 @@ public class VideoRecordActivity extends AppCompatActivity implements
         @Override
         public void onVideoRecordingEnd() {
             super.onVideoRecordingEnd();
+            isRecording = false;
             mBtnRecord.stopCountDown();
             message("Video taken. Processing...", false);
             LOG.w("onVideoRecordingEnd!");
@@ -342,7 +347,8 @@ public class VideoRecordActivity extends AppCompatActivity implements
         super.onPause();
         toggleFlash(true);
 
-        if (camera.isTakingVideo() || camera.isTakingPicture()) {
+        if (isRecording) {
+            isRecording = false;
             stopMode = 2;
             camera.stopVideo();
             mBtnRecord.stopCountDown();

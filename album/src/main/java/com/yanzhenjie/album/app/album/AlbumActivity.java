@@ -112,8 +112,8 @@ public class AlbumActivity extends BaseActivity implements
         mColumnCount = argument.getInt(Album.KEY_INPUT_COLUMN_COUNT);
         mHasCamera = argument.getBoolean(Album.KEY_INPUT_ALLOW_CAMERA);
         mLimitCount = argument.getInt(Album.KEY_INPUT_LIMIT_COUNT);
-        maxDuration = argument.getInt(Album.KEY_INPUT_CAMERA_MAX_DURATION);
-        minDuration = argument.getInt(Album.KEY_INPUT_CAMERA_MIN_DURATION);
+        maxDuration = argument.getInt(Album.KEY_INPUT_CAMERA_MAX_DURATION,maxDuration);
+        minDuration = argument.getInt(Album.KEY_INPUT_CAMERA_MIN_DURATION,minDuration);
         mLimitBytes = argument.getLong(Album.KEY_INPUT_CAMERA_BYTES);
         mFilterVisibility = argument.getBoolean(Album.KEY_INPUT_FILTER_VISIBILITY);
     }
