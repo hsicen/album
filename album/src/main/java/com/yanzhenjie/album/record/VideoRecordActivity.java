@@ -1,6 +1,6 @@
 package com.yanzhenjie.album.record;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -11,15 +11,17 @@ import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.yanzhenjie.album.Action;
 import com.yanzhenjie.album.AlbumFile;
 import com.yanzhenjie.album.R;
 import com.yanzhenjie.album.app.album.VideoPlayActivity;
@@ -55,7 +57,11 @@ public class VideoRecordActivity extends AppCompatActivity implements
     private static final String sMaxTime = "max_record_time";
     private static final String sMinTime = "min_record_time";
 
-    public static RecordCallback sCallback;
+    //成功和失败回调
+    public static Action<AlbumFile> sResult;
+    public static Action<String> sCancel;
+
+    //public static RecordCallback sCallback;
     private final static CameraLogger LOG = CameraLogger.create("DemoApp");
     private final static boolean USE_FRAME_PROCESSOR = false;
     private final static boolean DECODE_BITMAP = true;
@@ -304,11 +310,18 @@ public class VideoRecordActivity extends AppCompatActivity implements
         }
     }
 
-    public static void start(Activity mAct, int maxDuration, int minDuration) {
-        Intent intent = new Intent(mAct, VideoRecordActivity.class);
-        intent.putExtra(sMaxTime, maxDuration);
-        intent.putExtra(sMinTime, minDuration);
-        mAct.startActivity(intent);
+    @Override
+    public void onBackPressed() {
+        if (sCancel != null) sCancel.onAction("User canceled.");
+        finish();
+    }
+
+    @Override
+    public void finish() {
+        sResult = null;
+        sCancel = null;
+
+        super.finish();
     }
 
     private void hideStatusNavigationBar() {
@@ -358,13 +371,14 @@ public class VideoRecordActivity extends AppCompatActivity implements
 
     @Override
     public void onVideoBack() {
-        sCallback.onRecordBack(VideoPlayActivity.mSelectFile.getPath());
+        if (sResult != null) sResult.onAction(VideoPlayActivity.mSelectFile);
         finish();
     }
 
-    public interface RecordCallback {
-
-        /*** 预览完成回调*/
-        void onRecordBack(String filePath);
+    public static void start(Context mAct, int maxDuration, int minDuration) {
+        Intent intent = new Intent(mAct, VideoRecordActivity.class);
+        intent.putExtra(sMaxTime, maxDuration);
+        intent.putExtra(sMinTime, minDuration);
+        mAct.startActivity(intent);
     }
 }

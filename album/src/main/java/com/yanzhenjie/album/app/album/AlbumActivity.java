@@ -5,14 +5,15 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.PopupMenu;
 
 import com.yanzhenjie.album.Action;
 import com.yanzhenjie.album.Album;
@@ -29,7 +30,7 @@ import com.yanzhenjie.album.app.album.data.PathConvertTask;
 import com.yanzhenjie.album.app.album.data.ThumbnailBuildTask;
 import com.yanzhenjie.album.impl.OnItemClickListener;
 import com.yanzhenjie.album.mvp.BaseActivity;
-import com.yanzhenjie.album.record.VideoRecordActivity;
+import com.yanzhenjie.album.record.KCamera;
 import com.yanzhenjie.album.util.AlbumUtils;
 import com.yanzhenjie.mediascanner.MediaScanner;
 
@@ -48,7 +49,6 @@ public class AlbumActivity extends BaseActivity implements
         MediaReadTask.Callback,
         GalleryActivity.Callback,
         VideoPlayActivity.VideoCallback,
-        VideoRecordActivity.RecordCallback,
         PathConvertTask.Callback,
         ThumbnailBuildTask.Callback {
 
@@ -112,8 +112,8 @@ public class AlbumActivity extends BaseActivity implements
         mColumnCount = argument.getInt(Album.KEY_INPUT_COLUMN_COUNT);
         mHasCamera = argument.getBoolean(Album.KEY_INPUT_ALLOW_CAMERA);
         mLimitCount = argument.getInt(Album.KEY_INPUT_LIMIT_COUNT);
-        maxDuration = argument.getInt(Album.KEY_INPUT_CAMERA_MAX_DURATION,maxDuration);
-        minDuration = argument.getInt(Album.KEY_INPUT_CAMERA_MIN_DURATION,minDuration);
+        maxDuration = argument.getInt(Album.KEY_INPUT_CAMERA_MAX_DURATION, maxDuration);
+        minDuration = argument.getInt(Album.KEY_INPUT_CAMERA_MIN_DURATION, minDuration);
         mLimitBytes = argument.getLong(Album.KEY_INPUT_CAMERA_BYTES);
         mFilterVisibility = argument.getBoolean(Album.KEY_INPUT_FILTER_VISIBILITY);
     }
@@ -306,8 +306,18 @@ public class AlbumActivity extends BaseActivity implements
 
     /*** 点击录制视频逻辑处理*/
     private void takeVideo() {
-        VideoRecordActivity.sCallback = this;
-        VideoRecordActivity.start(this, maxDuration, minDuration);
+        new KCamera(this)
+                .video()
+                .maxDuration(maxDuration)
+                .minDuration(minDuration)
+                .onResult(new Action<AlbumFile>() {
+                    @Override
+                    public void onAction(@NonNull AlbumFile result) {
+                        ArrayList<AlbumFile> tempList = new ArrayList<>();
+                        tempList.add(result);
+                        onThumbnailCallback(tempList);
+                    }
+                }).start();
     }
 
     /*** 拍照回调处理*/
@@ -639,12 +649,5 @@ public class AlbumActivity extends BaseActivity implements
         sResult = null;
         sCancel = null;
         super.finish();
-    }
-
-    @Override
-    public void onRecordBack(String filePath) {
-        ArrayList<AlbumFile> tempList = new ArrayList<>();
-        tempList.add(VideoPlayActivity.mSelectFile);
-        onThumbnailCallback(tempList);
     }
 }

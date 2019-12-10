@@ -16,20 +16,22 @@
 package com.yanzhenjie.album.sample.app;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.yanzhenjie.album.Action;
 import com.yanzhenjie.album.Album;
-import com.yanzhenjie.album.record.VideoRecordActivity;
+import com.yanzhenjie.album.AlbumFile;
+import com.yanzhenjie.album.record.KCamera;
 import com.yanzhenjie.album.sample.R;
 
 /**
@@ -78,18 +80,21 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     private void recordVideo() {
-        VideoRecordActivity.sCallback = new VideoRecordActivity.RecordCallback() {
-            @Override
-            public void onRecordBack(String filePath) {
-                mTextView.setText(filePath);
+        new KCamera(this)
+                .picture()
+                .video()
+                .maxDuration(30)
+                .minDuration(3)
+                .onResult(new Action<AlbumFile>() {
+                    @Override
+                    public void onAction(@NonNull AlbumFile result) {
+                        mTextView.setText(result.getPath());
 
-                Album.getAlbumConfig()
-                        .getAlbumLoader()
-                        .load(mImageView, filePath);
-            }
-        };
-
-        VideoRecordActivity.start(this, 30, 3);
+                        Album.getAlbumConfig()
+                                .getAlbumLoader()
+                                .load(mImageView, result.getPath());
+                    }
+                }).start();
     }
 
     @Override
